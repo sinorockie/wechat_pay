@@ -1,0 +1,13 @@
+{
+	"name": "ningbo",
+	"version": "2017.04.07",
+	"description": "booking",
+	"repository": {
+		"type": "git",
+		"location": "https://github.com/sinorockie/ningbo.git"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"express": "latest"
+	}
+}
