@@ -1,3 +1,4 @@
+var util = require('util');
 var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
@@ -13,7 +14,10 @@ app.use(expressSession({
 	secret: 'SECRET',
 	cookie: {maxAge: 60*60*1000}
 }));
+
 require('./routes')(app);
 app.listen(80);
 
-console.error('done!');
+require('./we');
+
+util.log('SERVER IS READY!');

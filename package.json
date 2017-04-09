@@ -19,6 +19,7 @@
 		"cookie-parser": "latest",
 		"express-session": "latest",
 		"connect-mongo": "latest",
+		"request": "latest",
 		"weui": "latest",
 		"angular": "1.5.11"
 	}
