@@ -13,4 +13,4 @@ function getAccessToken(){
 	});
 }
 getAccessToken();
-setInterval(getAccessToken, 1000);
+setInterval(getAccessToken, 1000*3600);
