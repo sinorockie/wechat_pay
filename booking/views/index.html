@@ -9,15 +9,15 @@
         <link rel="stylesheet" href="/weui/weui.css"/>
     </head>
     <body>
-        <div>
-            <div style='text-align:center; width: 90%; margin:auto;'>
+        <div ng-controller="index">
+            <div style='text-align:center; width: 90%; margin:auto;' ng-show="partOne">
                 <div>&nbsp;</div>
-                <a href="#" class="weui-btn weui-btn_primary">会议室</a>
-                <a href="#" class="weui-btn weui-btn_primary">书吧/咖啡厅</a>
-                <a href="#" class="weui-btn weui-btn_primary">球场</a>
+                <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('FIELD');nextStep(2);">足球场</a>
+                <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('BAR');nextStep(2);">书吧/咖啡厅</a>
+                <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('ROOM');nextStep(2);">会议室</a>
                 <div>&nbsp;</div>
             </div>
-            <div style='text-align:left; width: 90%; margin:auto;'>
+            <div style='text-align:left; width: 90%; margin:auto;' ng-show="partTwo">
                 <div>&nbsp;</div>
                 <div class="weui-cells weui-cells_form">
                     <div class="weui-cell">
@@ -25,39 +25,34 @@
                             <label class="weui-label">日期</label>
                         </div>
                         <div class="weui-cell__bd">
-                            <input id='show_date' class="weui-input" type="date">
+                            <input class="weui-input" type="date" ng-model='input_booking_date'>
                         </div>
                     </div>
-                    <div class="weui-cell">
-                        <div class="weui-cell__hd">
-                            <label class="weui-label">时段</label>
-                        </div>
-                        <div class="weui-cell__bd">
-                            <input value='' class="weui-input" type="text">
-                        </div>
-                    </div>
-                    <div class="weui-cell">
-                        <div class="weui-cell__hd">
-                            <label class="weui-label">费用</label>
-                        </div>
-                        <div class="weui-cell__bd">
-                            <div id='show_booking_type'>0.00</div>
-                        </div>
+                    <div class="weui-cells weui-cells_checkbox">
+                        <label class="weui-cell weui-check__label" ng-repeat="p in period_list">
+                            <div class="weui-cell__hd">
+                                <input type="checkbox" class="weui-check" mg-model="p" ng-click="selectPeriod(p);" ng-checked="select_one">
+                                <i class="weui-icon-checked"></i>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <p>{{p.period}}</p>
+                            </div>
+                        </label>
                     </div>
                 </div>
                 <div>&nbsp;</div>
-                <a href="javascript:;" class="weui-btn weui-btn_primary">下一步</a>
+                <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="nextStep(3);">下一步</a>
                 <div>&nbsp;</div>
             </div>
-            <div style='text-align:left; width: 90%; margin:auto;'>
+            <div style='text-align:left; width: 90%; margin:auto;' ng-show="partThree">
                 <div>&nbsp;</div>
                 <div class="weui-cells weui-cells_form">
-                    <div class="weui-cell">
+                    <div class="weui-cell" ng-show="!isField">
                         <div class="weui-cell__hd">
                             <label class="weui-label">公司</label>
                         </div>
                         <div class="weui-cell__bd">
-                            <select class="weui-select">
+                            <select class="weui-select" ng-model="booking_company">
                                 <option value="">请选择公司</option>
                                 <option value="朴洛教育科技（上海）有限公司">朴洛教育科技（上海）有限公司</option>
                             </select>
@@ -68,7 +63,7 @@
                             <label class="weui-label">姓名</label>
                         </div>
                         <div class="weui-cell__bd">
-                            <input value='石磊' class="weui-input" type="text" placeholder="请输入姓名">
+                            <input value='石磊' class="weui-input" type="text" placeholder="请输入姓名" ng-model="booking_user">
                         </div>
                     </div>
                     <div class="weui-cell">
@@ -76,15 +71,15 @@
                             <label class="weui-label">手机号</label>
                         </div>
                         <div class="weui-cell__bd">
-                            <input value='18521564305' class="weui-input" type="tel" placeholder="请输入手机号">
+                            <input value='18521564305' class="weui-input" type="tel" placeholder="请输入手机号" ng-model="booking_contact">
                         </div>
                     </div>
                 </div>
                 <div>&nbsp;</div>
-                <a href="javascript:;" class="weui-btn weui-btn_primary">下一步</a>
+                <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="nextStep(4);">下一步</a>
                 <div>&nbsp;</div>
             </div>
-            <div style='text-align:left; width: 90%; margin:auto;'>
+            <div style='text-align:left; width: 90%; margin:auto;' ng-show="partFour">
                 <div>&nbsp;</div>
                 <div class="weui-cells weui-cells_form">
                     <div class="weui-cell">
@@ -92,7 +87,7 @@
                             <label class="weui-label">预定类型</label>
                         </div>
                         <div class="weui-cell__bd">
-                            <div id='show_booking_type'>球场</div>
+                            <label>{{booking_type}}</label>
                         </div>
                     </div>
                     <div class="weui-cell">
@@ -100,31 +95,31 @@
                             <label class="weui-label">日期</label>
                         </div>
                         <div class="weui-cell__bd">
-                            <div id='show_booking_date'>2017年4月11日</div>
+                            <label>{{booking_date}}</label>
                         </div>
                     </div>
-                    <div class="weui-cell">
+                    <div class="weui-cell" ng-repeat="p in booking_period">
                         <div class="weui-cell__hd">
-                            <label class="weui-label">时段</label>
+                            <label class="weui-label"><div ng-show="$index==0">时段</div></label>
                         </div>
                         <div class="weui-cell__bd">
-                            <div id='show_booking_period'>9:00-9:59,10:00-10:59</div>
+                            <label ng-repeat="p_ in p">{{p_.period}}&nbsp;&nbsp;&nbsp;&nbsp;</label>
                         </div>
                     </div>
-                    <div class="weui-cell">
+                    <div class="weui-cell" ng-show="isField">
                         <div class="weui-cell__hd">
-                            <label class="weui-label">费用</label>
+                            <label class="weui-label">总费用</label>
                         </div>
                         <div class="weui-cell__bd">
-                            <div id='show_booking_fee'>200.00</div>
+                            <label>{{booking_fee | currency: '￥'}}（{{unit_price | currency: '￥'}}/小时）</label>
                         </div>
                     </div>
-                    <div class="weui-cell">
+                    <div class="weui-cell" ng-show="!isField">
                         <div class="weui-cell__hd">
                             <label class="weui-label">公司</label>
                         </div>
                         <div class="weui-cell__bd">
-                            <div id='show_booking_company'>朴洛教育科技（上海）有限公司</div>
+                            <label>{{booking_company}}</label>
                         </div>
                     </div>
                     <div class="weui-cell">
@@ -132,7 +127,7 @@
                             <label class="weui-label">姓名</label>
                         </div>
                         <div class="weui-cell__bd">
-                            <div id='show_booking_user'>石磊</div>
+                            <label>{{booking_user}}</label>
                         </div>
                     </div>
                     <div class="weui-cell">
@@ -140,7 +135,7 @@
                             <label class="weui-label">联系方式</label>
                         </div>
                         <div class="weui-cell__bd">
-                            <div id='show_booking_contact'>18521564305</div>
+                            <label>{{booking_contact}}</label>
                         </div>
                     </div>
                 </div>
