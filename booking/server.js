@@ -6,7 +6,8 @@ const expressSession = require('express-session');
 const mongoStore = require('connect-mongo')({session: expressSession});
 const mongoose = require('mongoose');
 require('./models/booking_model.js');
-mongoose.connect('mongodb://localhost/test')
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/booking')
 
 var app = express();
 app.engine('.html', require('ejs').__express);

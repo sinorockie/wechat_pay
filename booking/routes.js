@@ -10,4 +10,10 @@ module.exports = function(app){
 	app.get('/', function(res, res){
 		res.render('index');
 	});
+
+	var orders = require('./controllers/orders_controller');
+	app.get('/orders/create', orders.createOrder);
+
+	var payments = require('./controllers/payments_controller');
+	//app.post('/payments/create', payments.createPayment);
 }
