@@ -25,3 +25,7 @@ exports.createOrder = function(req, res) {
 		}
 	});
 };
+
+exports.updateOrder = function(req, res) {
+	
+};
