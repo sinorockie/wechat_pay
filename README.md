@@ -1,5 +1,9 @@
-GET CODE: url?code=CODE
+pu1uoEdu
+
+GET CODE:
 https://open.weixin.qq.com/connect/oauth2/authorize?appid=[]&redirect_uri=[]&response_type=code&scope=snsapi_base#wechat_redirect
+
+redirect_uri?code=CODE
 
 GET ACCESS_TOKEN:
 https://api.weixin.qq.com/sns/oauth2/access_token?appid=[]&secret=[]&code=[]&grant_type=authorization_code
@@ -15,7 +19,7 @@ grant_type	是	填写为authorization_code
    "refresh_token":"REFRESH_TOKEN",
    "openid":"OPENID",
    "scope":"SCOPE",
-   "unionid": "o6_bmasdasdsad6_2sgVt7hMZOPfL"
+   "unionid": "UNIONID"
 }
 
 创建订单: orderid, openid;
@@ -78,6 +82,18 @@ http.request({
 </xml>
 
 key设置路径：微信商户平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
+
+function getRandomString(){
+	var chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+	var string="";
+	for(var i=0;i<32;i++){
+		var id = parseInt(Math.random()*61);
+		string+=chars[id];
+	}
+	return string;
+}
+
+MD5(stringSignTemp).toUpperCase()
 ----------
 wx.chooseWXPay({
     timestamp: 0, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
