@@ -1,7 +1,7 @@
 module.exports = {
 	appid: "wxb8b350f3d3d0de52",
 	secret: "7d6e9ce21656e5c5a0caef33d01db31d",
-	mch_id: "",
+	mch_id: "12345678",
 	notify_url: 'http://127.0.0.1/weixin/notify',
 	init: {
 		"BOOKING_TYPE_LIST": {

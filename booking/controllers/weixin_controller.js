@@ -76,17 +76,17 @@ exports.preSign = function(req, res) {
   md5.update(params, "utf8");
   var sign = md5.digest('hex').toUpperCase();
   var xml = "<xml>" + 
-    "<appid>" + config.appid + "</appid>" + 
+    "<appid><![CDATA[" + config.appid + "]]></appid>" + 
     "<mch_id>" + config.mch_id + "</mch_id>" + 
-    "<nonce_str>" + nonce_str + "</nonce_str>" + 
-    "<sign>" + sign + "</sign>" + 
-    "<body>" + req.query.body + "</body>" + 
-    "<out_trade_no>" + req.query.out_trade_no + "</out_trade_no>" + 
+    "<nonce_str><![CDATA[" + nonce_str + "]]></nonce_str>" + 
+    "<sign><![CDATA[" + sign + "]]></sign>" + 
+    "<body><![CDATA[" + req.query.body + "]]></body>" + 
+    "<out_trade_no><![CDATA[" + req.query.out_trade_no + "]]></out_trade_no>" + 
     "<total_fee>" + req.query.total_fee + "</total_fee>" + 
-    "<spbill_create_ip>" + "127.0.0.1" + "</spbill_create_ip>" + 
-    "<notify_url>" + config.notify_url + "</notify_url>" + 
-    "<trade_type>JSAPI</trade_type>" + 
-    "<openid>" + req.session.openid + "</openid>" +
+    "<spbill_create_ip><![CDATA[" + "127.0.0.1" + "]]></spbill_create_ip>" + 
+    "<notify_url><![CDATA[" + config.notify_url + "]]></notify_url>" + 
+    "<trade_type><![CDATA[JSAPI]]></trade_type>" + 
+    "<openid><![CDATA[" + req.session.openid + "]]></openid>" +
     "</xml>";
   util.log(xml);
   request({
@@ -97,44 +97,31 @@ exports.preSign = function(req, res) {
       'content-type': 'application/xml',
     }
   }, function(error, response, body) {
-    util.log(error);
-    util.log(response);
     util.log(body);
-  //   if(res.statusCode==200) {
-  //         res.on('data', function (chunk) {
-  //             response += chunk;                  
-  //         });
-  //         res.on('end', function (chunk) {
-  //           parser.parseString(response, function (err, result) {
-  //             if (err) {
-  //               util.log(err);
-  //               res.status(500).json("failed to get prepay_id");
-  //             } else if (result.return_code=='SUCCESS' && result.result_code=='SUCCESS') {
-  //               var ret = {
-  //                 appId: config.appid,
-  //                 nonceStr: createNonceStr(),
-  //                 timeStamp: createTimestamp(),
-  //                 signType: 'MD5',
-  //                 package: 'prepay_id='+result.prepay_id
-  //               };
-  //               var string = raw(ret);
-  //                   crypto = require('crypto');
-  //                   md5Obj = crypto.createHash('MD5');
-  //                 md5Obj.update(string);
-  //               ret.preSign = md5Obj.digest('HEX');
+    parser.parseString(body, function (err, result) {
+      if (err) {
+        util.log(err);
+        res.status(500).json({preSign: 0});
+      } else if (result.xml.return_code=='SUCCESS' && result.xml.result_code=='SUCCESS') {
+        var ret = {
+          appId: config.appid,
+          nonceStr: createNonceStr(),
+          timeStamp: createTimestamp(),
+          signType: 'MD5',
+          package: 'prepay_id='+result.xml.prepay_id
+        };
+        var string = raw(ret);
+            crypto = require('crypto');
+            md5Obj = crypto.createHash('MD5');
+          md5Obj.update(string);
+        ret.preSign = md5Obj.digest('HEX');
 
-  //               res.json(ret);
-  //             } else {
-  //               util.log(result);
-  //               res.status(500).json("failed to get prepay_id");
-  //             }
-  //           });
-  //         });
-  //   } else {
-  //     res.status(500).json("failed to get prepay_id");
-  //   }
-  // }).end();
-    res.json(body);
+        res.json(ret);
+      } else {
+        util.log(result);
+        res.status(500).json({preSign: 0});
+      }
+    });
   });
 };
 
