@@ -30,19 +30,21 @@ function WXPay(body, out_trade_no, total_fee) {
             total_fee: total_fee
         }
     }).done(function(data) {
-        // wx.chooseWXPay({
-        //     timestamp: data.timeStamp,
-        //     nonceStr: data.nonceStr,
-        //     package: data.package,
-        //     signType: 'MD5',
-        //     paySign: data.paySign,
-        //     success: function (res) {
-        //         console.dir(res);
-        //     }
-        // });
+        wx.chooseWXPay({
+            timestamp: data.timeStamp,
+            nonceStr: data.nonceStr,
+            package: data.package,
+            signType: data.signType,
+            paySign: data.paySign,
+            success: function (res) {
+                console.dir(res);
+                return data.prepay_id;
+            }
+        });
         console.dir(data);
+        return 0;
     }).fail(function(data){
         console.dir(data);
+        return 0;
     });
-    return out_trade_no + "-" + total_fee;
 }

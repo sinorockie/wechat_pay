@@ -115,6 +115,8 @@ exports.preSign = function(req, res) {
             md5Obj = crypto.createHash('MD5');
           md5Obj.update(string);
         ret.preSign = md5Obj.digest('HEX');
+        
+        ret.prepay_id = result.xml.prepay_id;
 
         res.json(ret);
       } else {
