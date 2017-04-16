@@ -1,24 +1,21 @@
 var util = require('util');
 var request = require('request');
 
-/*
-AppID wxb8b350f3d3d0de52
-AppSecret 7d6e9ce21656e5c5a0caef33d01db31d
- */
+var config = require('./config');
 
 function access_token() {
-	request('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxb8b350f3d3d0de52&secret=7d6e9ce21656e5c5a0caef33d01db31d', function(error, response, body) {
+	request('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='+config.appid+'&secret='+config.secret, function(error, response, body) {
 		global.access_token = JSON.parse(body).access_token;
 		if (typeof(global.access_token)=="undefined") {
-			util.log("ACCESS_TOKEN ERROR: " + body);
+			util.log("access_token error: " + body);
 		} else {
-			util.log("NEW ACCESS TOKEN: " + global.access_token);
+			util.log("access_token: " + global.access_token);
 			request('https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token='+global.access_token+'&type=jsapi', function(error, response, body) {
 				global.jsapi_ticket = JSON.parse(body).ticket;
 				if (typeof(global.jsapi_ticket)=="undefined") {
-					util.log("JSAPI_TICKET ERROR: " + body);
+					util.log("jsapi_ticket error: " + body);
 				} else {
-					util.log("NEW JSAPI TICKET: " + global.jsapi_ticket);
+					util.log("jsapi_ticket: " + global.jsapi_ticket);
 				}
 			});
 		}

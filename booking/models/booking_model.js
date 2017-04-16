@@ -9,6 +9,7 @@ var OrderSchema = new Schema({
 	company: String,
 	bookingtype: String,
 	bookingdate: Date,
+	bookingfee: Number,
 	period: [String],
 	status: {type: String, enum:['PENDING', 'COMPLETED', 'CANCEL'], default: 'PENDING'},
 	createtime: {type: Date, default: Date.now},
@@ -17,9 +18,10 @@ var OrderSchema = new Schema({
 mongoose.model('Order', OrderSchema);
 
 var PaymentSchema = new Schema({
-	paymentid: {type: String, index: true, uniqure: true, required: true},
+	paymentid: {type: String, index: true},
 	orderid: {type: String, index: true, uniqure: true, required: true},
 	openid: String,
+	fee: Number,
 	status: {type: String, enum:['PENDING', 'PAID', 'REFUND'], default: 'PENDING'},
 	createtime: {type: Date, default: Date.now},
 	updatetime: {type: Date, default: Date.now}

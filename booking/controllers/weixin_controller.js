@@ -1,3 +1,13 @@
+var config = require('../config');
+
+var request = require('request');
+var util = require('util');
+var crypto = require('crypto');
+var xml2js = require('xml2js');
+
+var builder = new xml2js.Builder();
+var parser = new xml2js.Parser();
+
 var createNonceStr = function () {
   return Math.random().toString(36).substr(2, 15);
 };
@@ -44,78 +54,90 @@ exports.sign = function(req, res) {
     shaObj.update(string);
   ret.signature = shaObj.getHash('HEX');
 
+  ret.appid = config.appid;
+
   res.json(ret);
 };
 
-var http = require('http');
-var util = require('util');
-var crypto = require('crypto');
-
-var xml2js = require('xml2js');
-var builder = new xml2js.Builder();
-var parser = new xml2js.Parser();
-
 exports.preSign = function(req, res) {
-  var xml = builder.buildObject({
-    appid: 'wxb8b350f3d3d0de52',
-    mch_id: '',
-    nonce_str: createNonceStr(),
-    body: req.query.body,
-    out_trade_no: req.query.out_trade_no,
-    total_fee: req.query.total_fee,
-    spbill_create_ip: req.ip.match(/\d+\.\d+\.\d+\.\d+/),
-    notify_url: 'http://127.0.0.1/weixin/notify',
-    trade_type: 'JSAPI',
-    openid: req.session.openid
-  });
-  var response = "";
-  http.request({
-    hostname: 'https://api.mch.weixin.qq.com',
-    path: '/pay/unifiedorder',
-    data: xml,
-    method: 'POST',
+  var nonce_str = createNonceStr();
+  var params = 'appid=' + config.appid + "&" +
+    "body=" + req.query.body + "&" + 
+    "mch_id=" + config.mch_id + "&" + 
+    "nonce_str=" + nonce_str + "&" + 
+    "notify_url=" + config.notify_url + "&" + 
+    "openid=" + req.session.openid + "&" + 
+    "out_trade_no=" + req.query.out_trade_no + "&" + 
+    "spbill_create_ip=" + req.ip.match(/\d+\.\d+\.\d+\.\d+/) + "&" + 
+    "total_fee=" + req.query.total_fee + "&" + 
+    "trade_type=JSAPI&" + 
+    "key=" + config.key;
+  var md5 = crypto.createHash('md5');
+  md5.update(params, "utf8");
+  var sign = md5.digest('hex').toUpperCase();
+  var xml = "<xml>" + 
+    "<appid>" + config.appid + "</appid>" + 
+    "<mch_id>" + config.mch_id + "</mch_id>" + 
+    "<nonce_str>" + nonce_str + "</nonce_str>" + 
+    "<sign>" + sign + "</sign>" + 
+    "<body>" + req.query.body + "</body>" + 
+    "<out_trade_no>" + req.query.out_trade_no + "</out_trade_no>" + 
+    "<total_fee>" + req.query.total_fee + "</total_fee>" + 
+    "<spbill_create_ip>" + "127.0.0.1" + "</spbill_create_ip>" + 
+    "<notify_url>" + config.notify_url + "</notify_url>" + 
+    "<trade_type>JSAPI</trade_type>" + 
+    "<openid>" + req.session.openid + "</openid>" +
+    "</xml>";
+  util.log(xml);
+  request({
+    url: 'https://api.mch.weixin.qq.com/pay/unifiedorder',
+    body: xml,
+    method: 'post',
     headers: {
-      'Connection': 'Keep-Alive',
-      'Content-Type': 'application/xml;charset=utf-8',
-      'Content-length': xml.length
+      'content-type': 'application/xml',
     }
-  }, function(res) {
-    util.log(res);
-    if(res.statusCode==200) {
-          res.on('data', function (chunk) {
-              response += chunk;                  
-          });
-          res.on('end', function (chunk) {
-            parser.parseString(response, function (err, result) {
-              if (err) {
-                util.log(err);
-                res.status(500).json("Failed to get prepay_id");
-              } else if (result.return_code=='SUCCESS' && result.result_code=='SUCCESS') {
-                var ret = {
-                  appId: 'wxb8b350f3d3d0de52',
-                  nonceStr: createNonceStr(),
-                  timeStamp: createTimestamp(),
-                  signType: 'MD5',
-                  package: 'prepay_id='+result.prepay_id
-                };
-                var string = raw(ret);
-                    crypto = require('crypto');
-                    md5Obj = crypto.createHash('MD5');
-                  md5Obj.update(string);
-                ret.preSign = md5Obj.digest('HEX');
+  }, function(error, response, body) {
+    util.log(error);
+    util.log(response);
+    util.log(body);
+  //   if(res.statusCode==200) {
+  //         res.on('data', function (chunk) {
+  //             response += chunk;                  
+  //         });
+  //         res.on('end', function (chunk) {
+  //           parser.parseString(response, function (err, result) {
+  //             if (err) {
+  //               util.log(err);
+  //               res.status(500).json("failed to get prepay_id");
+  //             } else if (result.return_code=='SUCCESS' && result.result_code=='SUCCESS') {
+  //               var ret = {
+  //                 appId: config.appid,
+  //                 nonceStr: createNonceStr(),
+  //                 timeStamp: createTimestamp(),
+  //                 signType: 'MD5',
+  //                 package: 'prepay_id='+result.prepay_id
+  //               };
+  //               var string = raw(ret);
+  //                   crypto = require('crypto');
+  //                   md5Obj = crypto.createHash('MD5');
+  //                 md5Obj.update(string);
+  //               ret.preSign = md5Obj.digest('HEX');
 
-                res.json(ret);
-              } else {
-                res.status(500).json("Failed to get prepay_id");
-              }
-            });
-          });
-    } else {
-      res.status(500).json("Failed to get prepay_id");
-    }
-  }).end();
+  //               res.json(ret);
+  //             } else {
+  //               util.log(result);
+  //               res.status(500).json("failed to get prepay_id");
+  //             }
+  //           });
+  //         });
+  //   } else {
+  //     res.status(500).json("failed to get prepay_id");
+  //   }
+  // }).end();
+    res.json(body);
+  });
 };
 
 exports.notify = function(req, res) {
-  res.json(req.ip.match(/\d+\.\d+\.\d+\.\d+/));
+  res.json(JSON.stringify(res));
 };

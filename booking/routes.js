@@ -3,6 +3,8 @@ var express = require('express');
 var util = require('util');
 var request = require('request');
 
+var config = require('./config');
+
 module.exports = function(app){
 	app.use('/weui', express.static(__dirname + '/../node_modules/weui/dist/style')).
 		use('/jquery', express.static(__dirname + '/../node_modules/jquery/dist')).
@@ -10,32 +12,31 @@ module.exports = function(app){
 		use('/static', express.static(__dirname + '/static'));
 
 	app.get('/', function(req, res){
-		util.log("CODE: " + req.query.code);
-		/*
-			AppID wxb8b350f3d3d0de52
-			AppSecret 7d6e9ce21656e5c5a0caef33d01db31d
-		 */
-		request('https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxb8b350f3d3d0de52&secret=7d6e9ce21656e5c5a0caef33d01db31d&code='+req.query.code+'&grant_type=authorization_code', function(error, response, body){
+		request('https://api.weixin.qq.com/sns/oauth2/access_token?appid='+config.appid+'&secret='+config.secret+'&code='+req.query.code+'&grant_type=authorization_code', function(error, response, body){
+			util.log("code: " + req.query.code);
 			req.session.openid = JSON.parse(body).openid;
 			if (typeof(req.session.openid)=="undefined") {
-				util.log("OPEN_ID ERROR: " + body);
+				util.log("openid: " + body);
 			} else {
-				util.log("OPEN ID: " + req.session.openid);
+				util.log("openid error: " + req.session.openid);
 			}
 		});
 		res.render('index');
 	});
 
+	var init = require('./controllers/init_controller');
+	app.get('/init', init);
+
 	var weixin = require('./controllers/weixin_controller');
-	app.get('/weixin/sign', weixin.sign);
+	app.post('/weixin/sign', weixin.sign);
 	app.get('/weixin/preSign', weixin.preSign);
-	app.get('/weixin/notify', weixin.notify);
+	app.post('/weixin/notify', weixin.notify);
 
 	var orders = require('./controllers/orders_controller');
-	app.get('/orders/create', orders.createOrder);
-	app.get('/orders/update', orders.updateOrder);
+	app.post('/orders/create', orders.createOrder);
+	app.post('/orders/update', orders.updateOrder);
 
 	var payments = require('./controllers/payments_controller');
-	app.get('/payments/create', payments.createPayment);
-	app.get('/payments/update', payments.updatePayment);
+	app.post('/payments/create', payments.createPayment);
+	app.post('/payments/update', payments.updatePayment);
 }

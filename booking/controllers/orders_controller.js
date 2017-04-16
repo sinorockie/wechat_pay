@@ -7,19 +7,20 @@ var mongoose = require('mongoose'),
 exports.createOrder = function(req, res) {
 	var newOrder = new Order({
 		orderid: UUID.v1(),
-		openid: 'OpendID',
-		username: '石磊',
-		usercontact: '18521564305',
-		company: '朴洛教育科技（上海）有限公司',
-		bookingtype: 'BAR',
-		bookingdate: moment('2017-04-13', 'YYYY-MM-DD'),
-		period: ["09:00-09:59", "10:00-10:59"]
+		openid: req.session.openid,
+		username: req.body.username,
+		usercontact: req.body.usercontact,
+		company: req.body.company,
+		bookingtype: req.body.bookingtype,
+		bookingdate: moment(req.body.bookingdate, 'YYYY-MM-DD'),
+		bookingfee: req.body.bookingfee,
+		period: req.body.period
 	});
 	newOrder.save(function(err, results){
 		if (err) {
-			util.log("SAVE ORDER ERROR: " + err);
-			util.log("SAVE ORDER ERROR: " + newOrder);
-			res.status(500).json("Failed to save order");
+			util.log("save order error: " + err);
+			util.log("save order error: " + newOrder);
+			res.status(500).json("failed to save order");
 		} else {
 			res.json({orderid: newOrder.orderid});
 		}
@@ -27,5 +28,14 @@ exports.createOrder = function(req, res) {
 };
 
 exports.updateOrder = function(req, res) {
-	
+	req.body.update.updatetime = Date.now();
+	Order.update({orderid: req.body.orderid}, {$set: req.body.update}, function(err){
+		if (err) {
+			util.log("update order error: " + JSON.stringify(err));
+			util.log("update order error: " + JSON.stringify(req.body));
+			res.status(500).json("failed to update order");
+		} else {
+			res.json({result: 'success'});
+		}
+	})
 };

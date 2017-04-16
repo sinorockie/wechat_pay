@@ -1,6 +1,6 @@
 angular.module('booking', [])
 	.controller('index', function($scope, $filter, $http){
-		$http.get('./static/js/init.json')
+		$http.get('./init')
 			.success(function(data){
 			$scope.inits = data;
 		});
@@ -21,33 +21,60 @@ angular.module('booking', [])
 		$scope.partThree = false;
 		$scope.partFour = false;
 		$scope.nextStep = function(partNumber) {
-			if (partNumber == 1) {
-				$scope.partOne = true;
-				$scope.partTwo = false;
-				$scope.partThree = false;
-				$scope.partFour = false;
-			} else if (partNumber == 2) {
+			if (partNumber == 2) {
 				$scope.partOne = false;
 				$scope.partTwo = true;
 				$scope.partThree = false;
 				$scope.partFour = false;
 			} else if (partNumber == 3) {
+				if (angular.equals($scope.booking_date, undefined) || angular.equals($scope.booking_date, null)) {
+					$('#errorTips').html("请选择预定日期");
+					$('#iosDialog2').fadeIn(200);
+					return;
+				} else if ($scope.selected_units==0) {
+					$('#errorTips').html("请选择预定时段");
+					$('#iosDialog2').fadeIn(200);
+					return;
+				} else {
+					$('#errorTips').html("");
+				}
 				$scope.partOne = false;
 				$scope.partTwo = false;
 				$scope.partThree = true;
 				$scope.partFour = false;
 			} else if (partNumber == 4) {
+				if ($scope.isField==false) {
+					if (angular.equals($scope.booking_company, undefined) || angular.equals($scope.booking_company, '') || angular.equals($scope.booking_company, null)) {
+						$('#errorTips').html("请选择所在公司");
+						$('#iosDialog2').fadeIn(200);
+						return;
+					} else {
+						$('#errorTips').html("");
+					}
+				} else if (angular.equals($scope.booking_user, '') || angular.equals($scope.booking_company, null)) {
+					$('#errorTips').html("请填写姓名");
+					$('#iosDialog2').fadeIn(200);
+					return;
+				} else if (angular.equals($scope.booking_contact, '') || angular.equals($scope.booking_contact, null)) {
+					$('#errorTips').html("请填写联系方式");
+					$('#iosDialog2').fadeIn(200);
+					return;
+				} else {
+					$('#errorTips').html("");
+				}
 				$scope.partOne = false;
 				$scope.partTwo = false;
 				$scope.partThree = false;
 				$scope.partFour = true;
 			}
 		}
+
 		$scope.isField = false;
 		$scope.setBookingType = function(newBookingType) {
 			if (!angular.equals($scope.inits, {})) {
 				$scope.booking_type = $scope.inits['BOOKING_TYPE_LIST'][newBookingType].chinese;
 				$scope.period_list = $scope.inits['BOOKING_PERIOD_LIST'];
+				$scope.company_list = $scope.inits['BOOKING_COMPANY_LIST'];
 			}
 		};
 		$scope.selected_periods = [];
@@ -69,7 +96,84 @@ angular.module('booking', [])
 					$scope.booking_period[Math.floor(index/2)].push(data);
 				}
 			});
-		}
+		};
+		$scope.isDone = true;
+		$scope.submit = function() {
+			var period = [];
+			angular.forEach($scope.selected_periods, function(data,index,array){
+				period.push(data.period);
+			});
+			var data = {
+					username: $scope.booking_user,
+					usercontact: $scope.booking_contact,
+					company: angular.equals($scope.booking_company, undefined) || angular.equals($scope.booking_company, null) ? '' : $scope.booking_company,
+					bookingtype: $scope.booking_type,
+					bookingdate: $scope.booking_date,
+					bookingfee: $scope.booking_fee,
+					period: period
+		        };
+			$http.post('./orders/create', data).then(function successCallback(response) {
+		    		var orderid = response.data.orderid;
+		    		var fee = $scope.booking_fee;
+		    		if ($scope.booking_fee>0) {
+		    			data = {
+		    				orderid: orderid,
+		    				fee: fee
+		    			}
+		    			$http.post('./payments/create', data).then(function successCallback(response) {
+					    		var paymentid = WXPay('足球场类订单', orderid, fee);
+					    		if (paymentid!=0) {
+					    			data = {
+					    				orderid: orderid,
+					    				update: {
+					    					paymentid: paymentid,
+					    					status: 'PAID'
+					    				}
+					    			}
+					    			$http.post('./payments/update', data).then(function successCallback(response) {
+							    			data = {
+							    				orderid: orderid,
+							    				update: {
+							    					status: 'COMPLETED'
+							    				}
+							    			}
+							    			$http.post('./orders/update', data).then(function successCallback(response) {
+										    		$scope.isDone = false;
+										        }, function errorCallback(response) {
+													$('#errorTips').html("更新非足球场类订单错误");
+													$('#iosDialog2').fadeIn(200);
+										    });
+								        }, function errorCallback(response) {
+											$('#errorTips').html("更新非球场类支付订单错误");
+											$('#iosDialog2').fadeIn(200);
+								    });
+					    		} else {
+									$('#errorTips').html("创建球场类支付订单错误");
+									$('#iosDialog2').fadeIn(200);
+					    		}
+					        }, function errorCallback(response) {
+								$('#errorTips').html("创建球场类支付订单错误");
+								$('#iosDialog2').fadeIn(200);
+					    });
+		    		} else {
+		    			data = {
+		    				orderid: response.data.orderid,
+		    				update: {
+		    					status: 'COMPLETED'
+		    				}
+		    			}
+		    			$http.post('./orders/update', data).then(function successCallback(response) {
+					    		$scope.isDone = false;
+					        }, function errorCallback(response) {
+								$('#errorTips').html("更新非足球场类订单错误");
+								$('#iosDialog2').fadeIn(200);
+					    });
+		    		}
+		        }, function errorCallback(response) {
+					$('#errorTips').html("创建非球场类订单错误");
+					$('#iosDialog2').fadeIn(200);
+		    });
+		};
 
 		$scope.$watch('booking_type', function(newBookingType, oldBookingType) {
 			if (!angular.equals($scope.inits, {})) {

@@ -1,6 +1,6 @@
 $.ajax({
-    url : "./utils/sign",
-    type : 'get',
+    url : "./weixin/sign",
+    type : 'post',
     dataType : 'json',
     contentType : "application/x-www-form-urlencoded; charset=utf-8",
     data : {
@@ -9,7 +9,7 @@ $.ajax({
 }).done(function(data) {
     wx.config({
             debug : true,
-            appId : 'wxb8b350f3d3d0de52',
+            appId : data.appid,
             timestamp : data.timestamp,
             nonceStr : data.nonceStr,
             signature : data.signature,
@@ -20,8 +20,8 @@ $.ajax({
 
 function WXPay(body, out_trade_no, total_fee) {
     $.ajax({
-        url : "./utils/preSign",
-        type : 'get',
+        url : "./weixin/preSign",
+        type : 'post',
         dataType : 'json',
         contentType : "application/x-www-form-urlencoded; charset=utf-8",
         data : {
@@ -30,17 +30,19 @@ function WXPay(body, out_trade_no, total_fee) {
             total_fee: total_fee
         }
     }).done(function(data) {
-        wx.chooseWXPay({
-            timestamp: data.timeStamp,
-            nonceStr: data.nonceStr,
-            package: data.package,
-            signType: 'MD5',
-            paySign: data.paySign,
-            success: function (res) {
-                console.dir(res);
-            }
-        });
+        // wx.chooseWXPay({
+        //     timestamp: data.timeStamp,
+        //     nonceStr: data.nonceStr,
+        //     package: data.package,
+        //     signType: 'MD5',
+        //     paySign: data.paySign,
+        //     success: function (res) {
+        //         console.dir(res);
+        //     }
+        // });
+        console.dir(data);
     }).fail(function(data){
         console.dir(data);
     });
+    return out_trade_no + "-" + total_fee;
 }

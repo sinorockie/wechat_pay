@@ -27,6 +27,8 @@ app.use(expressSession({
 require('./routes')(app);
 app.listen(80);
 
-require('./we');
+require('./weixin');
 
-util.log('SERVER IS READY!');
+var config = require('./config');
+util.log("appid: " + config.appid);
+util.log("secret: " + config.secret);
