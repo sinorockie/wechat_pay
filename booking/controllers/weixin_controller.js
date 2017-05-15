@@ -1,4 +1,4 @@
-var config = require('../config');
+﻿var config = require('../config');
 
 var request = require('request');
 var util = require('util');
@@ -46,7 +46,7 @@ exports.sign = function(req, res) {
     jsapi_ticket: global.jsapi_ticket,
     nonceStr: createNonceStr(),
     timestamp: createTimestamp(),
-    url: req.query.url
+    url: req.body.url
   };
   var string = raw(ret);
       jsSHA = require('jssha');
