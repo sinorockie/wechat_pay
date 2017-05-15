@@ -16,9 +16,9 @@ module.exports = function(app){
 			util.log("code: " + req.query.code);
 			req.session.openid = JSON.parse(body).openid;
 			if (typeof(req.session.openid)=="undefined") {
-				util.log("openid: " + body);
+				util.log("openid error: " + body);
 			} else {
-				util.log("openid error: " + req.session.openid);
+				util.log("openid: " + req.session.openid);
 			}
 		});
 		res.render('index');
