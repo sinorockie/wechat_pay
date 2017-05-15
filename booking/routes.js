@@ -2,6 +2,7 @@ var crypto = require('crypto');
 var express = require('express');
 var util = require('util');
 var request = require('request');
+var rp = require('request-promise');
 
 var config = require('./config');
 
@@ -12,16 +13,33 @@ module.exports = function(app){
 		use('/static', express.static(__dirname + '/static'));
 
 	app.get('/', function(req, res){
-		request('https://api.weixin.qq.com/sns/oauth2/access_token?appid='+config.appid+'&secret='+config.secret+'&code='+req.query.code+'&grant_type=authorization_code', function(error, response, body){
-			util.log("code: " + req.query.code);
-			req.session.openid = JSON.parse(body).openid;
-			if (typeof(req.session.openid)=="undefined") {
-				util.log("openid error: " + body);
-			} else {
-				util.log("openid: " + req.session.openid);
-			}
-		});
-		res.render('index');
+		util.log("openid: " + req.session.openid);
+		var options = {
+			uri: 'https://api.weixin.qq.com/sns/oauth2/access_token',
+			qs: {
+				appid: config.appid,
+				secret: config.secret,
+				code: req.query.code,
+				grant_type: 'authorization_code'
+			},
+			headers: {
+				'User-Agent': 'Request-Promise'
+			},
+			json: true
+		};
+		rp(options)
+			.then(function (repos) {
+				if (typeof(repos.openid)!="undefined") {
+					req.session.openid = repos.openid;
+					util.log("openid: " + req.session.openid);
+				} else {
+					util.log("repos: " + JSON.stringify(repos));
+				}
+				res.render('index');
+			})
+			.catch(function (err) {
+				util.log("err: " + JSON.stringify(err));
+			});
 	});
 
 	var init = require('./controllers/init_controller');

@@ -15,7 +15,8 @@ $.ajax({
             signature : data.signature,
             jsApiList : ['hideOptionMenu', 'chooseWXPay']
         });
-    wx.hideOptionMenu();
+    wx.ready(function(){
+        });
 });
 
 function WXPay(body, out_trade_no, total_fee) {
