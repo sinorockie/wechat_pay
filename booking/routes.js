@@ -13,7 +13,8 @@ module.exports = function(app){
 		use('/static', express.static(__dirname + '/static'));
 
 	app.get('/', function(req, res){
-		util.log("openid: " + req.session.openid);
+		util.log("req.query.code: " + req.query.code);
+		util.log("req.session.openid: " + req.session.openid);
 		var options = {
 			uri: 'https://api.weixin.qq.com/sns/oauth2/access_token',
 			qs: {
@@ -29,16 +30,20 @@ module.exports = function(app){
 		};
 		rp(options)
 			.then(function (repos) {
-				if (typeof(repos.openid)!="undefined") {
+				if (typeof(req.session.openid)!="undefined") {
+					res.render('index', {openid: req.session.openid});
+				} else if (typeof(repos.openid)!="undefined") {
+					util.log("repos.openid: " + repos.openid);
 					req.session.openid = repos.openid;
-					util.log("openid: " + req.session.openid);
+					res.render('index', {openid: req.session.openid});
 				} else {
 					util.log("repos: " + JSON.stringify(repos));
+					res.send("repos: " + JSON.stringify(repos));
 				}
-				res.render('index');
 			})
 			.catch(function (err) {
 				util.log("err: " + JSON.stringify(err));
+				res.send("err: " + JSON.stringify(err));
 			});
 	});
 
