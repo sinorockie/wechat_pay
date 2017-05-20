@@ -123,10 +123,10 @@ angular.module('booking', [])
 		    			}
 						console.log(angular.fromJson(data));
 		    			$http.post('./payments/create', data).then(function successCallback(response) {
-					    		var paymentid = WXPay('足球场类订单', orderid, fee);
+					    		var paymentid = WXPay('足球场类订单', response.data.orderid, response.data.fee);
 					    		if (paymentid!=0) {
 					    			data = {
-					    				orderid: orderid,
+					    				orderid: response.data.orderid,
 					    				update: {
 					    					paymentid: paymentid,
 					    					status: 'PAID'

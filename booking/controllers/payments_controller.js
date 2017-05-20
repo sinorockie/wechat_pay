@@ -13,7 +13,11 @@ exports.createPayment = function(req, res) {
 			util.log("save order error: " + JSON.stringify(newPayment));
 			res.status(500).json("failed to save order");
 		} else {
-			res.json({orderid: newPayment.orderid});
+			res.json({
+					orderid: req.body.orderid,
+					openid: req.session.openid,
+					fee: req.body.fee
+				});
 		}
 	});
 };
