@@ -162,11 +162,13 @@ exports.pushMsg = function(req, res) {
           'content-type': 'application/json',
         }
       }, function(error, response, body) {
+        util.log(error);
         util.log(body);
         util.log(response);
+        util.log(JSON.stringify(error));
         util.log(JSON.stringify(body));
         util.log(JSON.stringify(response));
         res.status(200);
       });
-    })
+    });
 };
