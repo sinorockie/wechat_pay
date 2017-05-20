@@ -166,7 +166,7 @@ angular.module('booking', [])
 		    				}
 		    			}
 		    			$http.post('./orders/update', data).then(function successCallback(response) {
-					    		$http.post('./weixin/pushMsg', {orderid: response.data.orderid}).then(function successCallback(response) {
+					    		$http.post('./weixin/pushMsg', {orderid: data.orderid}).then(function successCallback(response) {
 										$scope.isDone = false;
 					    			}, function errorCallback(response) {
 										$('#errorTips').html("推送确认消息失败");
