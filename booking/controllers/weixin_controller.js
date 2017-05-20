@@ -128,5 +128,32 @@ exports.preSign = function(req, res) {
 };
 
 exports.notify = function(req, res) {
-  res.json(JSON.stringify(res));
+  res.json(JSON.stringify(req));
+};
+var mongoose = require('mongoose'),
+  Order = mongoose.model('Order');
+
+exports.pushMsg = function(req, res) {
+  Order.findOne({orderid: req.body.orderid})
+    .exec(function(err, order) {
+      request({
+        url: 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='+global.access_token,
+        body: {
+          first: '你好，预订成功，信息如下：',
+          keyword1: order.bookingtype,
+          keyword2: moment(order.bookingdate).format('YYYY-MM-DD');
+          keyword3: order.period,
+          keyword4: order.username,
+          keyword5: order.usercontact
+          remarks: '公司：' + order.company
+        },
+        method: 'post',
+        headers: {
+          'content-type': 'application/json',
+        }
+      }, function(error, response, body) {
+        util.log(body);
+        res.json(JSON.stringify(body));
+      });
+    })
 };
