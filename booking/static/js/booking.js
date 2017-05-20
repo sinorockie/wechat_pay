@@ -112,6 +112,7 @@ angular.module('booking', [])
 					bookingfee: $scope.booking_fee,
 					period: period
 		        };
+		    alert(JSON.stringfy(data));
 			$http.post('./orders/create', data).then(function successCallback(response) {
 		    		var orderid = response.data.orderid;
 		    		var fee = $scope.booking_fee;
