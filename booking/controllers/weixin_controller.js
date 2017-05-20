@@ -152,9 +152,9 @@ exports.pushMsg = function(req, res) {
             "keyword1": {"value": order.bookingtype, "color": "#000000"},
             "keyword2": {"value": moment(order.bookingdate).format('YYYY-MM-DD'), "color": "#000000"},
             "keyword3": {"value": order.period, "color": "#000000"},
-            "keyword4": {"value":  order.username, "color": "#000000"},
+            "keyword4": {"value": order.username, "color": "#000000"},
             "keyword5": {"value": order.usercontact, "color": "#000000"},
-            "remarks": {"value": "公司：" + order.company, "color": "#000000"}
+            "remark": {"value": "公司：" + order.company, "color": "#000000"}
           }
         }),
         method: 'post',
@@ -162,13 +162,8 @@ exports.pushMsg = function(req, res) {
           'content-type': 'application/json',
         }
       }, function(error, response, body) {
-        util.log(error);
-        util.log(body);
-        util.log(response);
-        util.log(JSON.stringify(error));
         util.log(JSON.stringify(body));
-        util.log(JSON.stringify(response));
-        res.status(200);
+        res.status(200).json(JSON.stringify(body));
       });
     });
 };
