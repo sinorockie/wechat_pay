@@ -142,7 +142,7 @@ exports.pushMsg = function(req, res) {
       util.log("order: " + JSON.stringify(order));
       request({
         url: "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+global.access_token,
-        body: {
+        data: {
           "touser": req.session.openid,
           "template_id": "ayXyQmQOpZBmuSnXBnGd481B8ZZS9CMiwxMz_CVarHA",
           "url": "",
