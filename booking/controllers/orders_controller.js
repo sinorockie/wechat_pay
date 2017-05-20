@@ -6,7 +6,7 @@ var mongoose = require('mongoose'),
 	Order = mongoose.model('Order');
 exports.createOrder = function(req, res) {
 	var newOrder = new Order({
-		orderid: UUID.v1(),
+		orderid: parseInt(new Date().getTime() / 1000) + '',
 		openid: req.session.openid,
 		username: req.body.username,
 		usercontact: req.body.usercontact,
