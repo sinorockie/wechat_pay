@@ -141,11 +141,11 @@ exports.pushMsg = function(req, res) {
     .exec(function(err, order) {
       util.log("order: " + JSON.stringify(order));
       request({
-        url: 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='+global.access_token,
+        url: "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+global.access_token,
         body: {
           "touser": req.session.openid,
           "template_id": "ayXyQmQOpZBmuSnXBnGd481B8ZZS9CMiwxMz_CVarHA",
-          "url": "http://weixin.qq.com/download",
+          "url": "",
           "topcolor": "#000000",
           "data": {
             "first": {"value": "你好，预订成功，信息如下：", "color": "#000000"},
@@ -163,7 +163,10 @@ exports.pushMsg = function(req, res) {
         }
       }, function(error, response, body) {
         util.log(body);
-        res.json(JSON.stringify(body));
+        util.log(response);
+        util.log(JSON.stringify(body));
+        util.log(JSON.stringify(response));
+        res.status(200);
       });
     })
 };
