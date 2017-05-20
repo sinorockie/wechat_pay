@@ -22,7 +22,7 @@ $.ajax({
 function WXPay(body, out_trade_no, total_fee) {
     $.ajax({
         url : "./weixin/preSign",
-        type : 'post',
+        type : 'get',
         dataType : 'json',
         contentType : "application/x-www-form-urlencoded; charset=utf-8",
         data : {
