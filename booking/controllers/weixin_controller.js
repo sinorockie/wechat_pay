@@ -151,7 +151,7 @@ exports.pushMsg = function(req, res) {
             "first": {"value": "你好，预订成功，信息如下：", "color": "#000000"},
             "keyword1": {"value": order.bookingtype, "color": "#000000"},
             "keyword2": {"value": moment(order.bookingdate).format('YYYY-MM-DD'), "color": "#000000"},
-            "keyword3": {"value": order.period, "color": "#000000"},
+            "keyword3": {"value": order.period.toString(), "color": "#000000"},
             "keyword4": {"value": order.username, "color": "#000000"},
             "keyword5": {"value": order.usercontact, "color": "#000000"},
             "remark": {"value": "公司：" + order.company, "color": "#000000"}
