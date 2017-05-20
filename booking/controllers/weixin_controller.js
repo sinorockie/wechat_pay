@@ -141,10 +141,10 @@ exports.pushMsg = function(req, res) {
         body: {
           first: '你好，预订成功，信息如下：',
           keyword1: order.bookingtype,
-          keyword2: moment(order.bookingdate).format('YYYY-MM-DD');
+          keyword2: moment(order.bookingdate).format('YYYY-MM-DD'),
           keyword3: order.period,
           keyword4: order.username,
-          keyword5: order.usercontact
+          keyword5: order.usercontact,
           remarks: '公司：' + order.company
         },
         method: 'post',
