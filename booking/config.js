@@ -1,8 +1,8 @@
 ﻿module.exports = {
 	appid: "wxf82a0675d6fda018",
 	secret: "0227af7a51de077f48174423a4a632dc",
-	mch_id: "12345678",
-	notify_url: 'http://127.0.0.1/weixin/notify',
+	mch_id: "1465625702",
+	notify_url: 'http://booking.proverseaedu.com/weixin/notify',
 	init: {
 		"BOOKING_TYPE_LIST": {
 			"FIELD": {"chinese": "足球场"},
@@ -26,6 +26,6 @@
 			{"company": ""},
 			{"company": "朴洛教育科技（上海）有限公司"}
 		],
-		"UNIT_PRICE": 100
+		"UNIT_PRICE": 0.01
 	}
 }
