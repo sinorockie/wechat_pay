@@ -166,7 +166,12 @@ angular.module('booking', [])
 		    				}
 		    			}
 		    			$http.post('./orders/update', data).then(function successCallback(response) {
-					    		$scope.isDone = false;
+					    		$http.post('./weixin/pushMsg', {orderid: response.data.orderid}).then(function successCallback(response) {
+										$scope.isDone = false;
+					    			}, function errorCallback(response) {
+										$('#errorTips').html("推送确认消息失败");
+										$('#iosDialog2').fadeIn(200);
+							    });
 					        }, function errorCallback(response) {
 								$('#errorTips').html("更新非足球场类订单错误");
 								$('#iosDialog2').fadeIn(200);
