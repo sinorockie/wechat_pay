@@ -52,7 +52,7 @@ module.exports = function(app){
 
 	var weixin = require('./controllers/weixin_controller');
 	app.post('/weixin/sign', weixin.sign);
-	app.get('/weixin/preSign', weixin.preSign);
+	app.post('/weixin/preSign', weixin.preSign);
 	app.post('/weixin/notify', weixin.notify);
 
 	var orders = require('./controllers/orders_controller');
