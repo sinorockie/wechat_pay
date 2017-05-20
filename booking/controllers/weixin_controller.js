@@ -136,18 +136,26 @@ var mongoose = require('mongoose'),
 var moment = require('moment');
 
 exports.pushMsg = function(req, res) {
+  util.log("orderid: " + req.body.orderid);
   Order.findOne({orderid: req.body.orderid})
     .exec(function(err, order) {
+      util.log("order: " + JSON.stringify(order));
       request({
         url: 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='+global.access_token,
         body: {
-          first: '你好，预订成功，信息如下：',
-          keyword1: order.bookingtype,
-          keyword2: moment(order.bookingdate).format('YYYY-MM-DD'),
-          keyword3: order.period,
-          keyword4: order.username,
-          keyword5: order.usercontact,
-          remarks: '公司：' + order.company
+          "touser": req.session.openid,
+          "template_id": "ayXyQmQOpZBmuSnXBnGd481B8ZZS9CMiwxMz_CVarHA",
+          "url": "http://weixin.qq.com/download",
+          "topcolor": "#000000",
+          "data": {
+            "first": {"value": "你好，预订成功，信息如下：", "color": "#000000"},
+            "keyword1": {"value": order.bookingtype, "color": "#000000"},
+            "keyword2": {"value": moment(order.bookingdate).format('YYYY-MM-DD'), "color": "#000000"},
+            "keyword3": {"value": order.period, "color": "#000000"},
+            "keyword4": {"value":  order.username, "color": "#000000"},
+            "keyword5": {"value": order.usercontact, "color": "#000000"},
+            "remarks": {"value": "公司：" + order.company, "color": "#000000"}
+          }
         },
         method: 'post',
         headers: {
