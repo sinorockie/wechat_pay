@@ -112,7 +112,7 @@ angular.module('booking', [])
 					bookingfee: $scope.booking_fee,
 					period: period
 		        };
-		    alert(JSON.stringfy(data));
+		    console.log(angular.fromJson(data));
 			$http.post('./orders/create', data).then(function successCallback(response) {
 		    		var orderid = response.data.orderid;
 		    		var fee = $scope.booking_fee;
@@ -121,6 +121,7 @@ angular.module('booking', [])
 		    				orderid: orderid,
 		    				fee: fee
 		    			}
+						console.log(angular.fromJson(data));
 		    			$http.post('./payments/create', data).then(function successCallback(response) {
 					    		var paymentid = WXPay('足球场类订单', orderid, fee);
 					    		if (paymentid!=0) {
