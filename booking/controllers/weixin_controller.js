@@ -142,7 +142,7 @@ exports.pushMsg = function(req, res) {
       util.log("order: " + JSON.stringify(order));
       request({
         url: "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+global.access_token,
-        data: {
+        body: JSON.stringify({
           "touser": req.session.openid,
           "template_id": "ayXyQmQOpZBmuSnXBnGd481B8ZZS9CMiwxMz_CVarHA",
           "url": "",
@@ -156,7 +156,7 @@ exports.pushMsg = function(req, res) {
             "keyword5": {"value": order.usercontact, "color": "#000000"},
             "remarks": {"value": "公司：" + order.company, "color": "#000000"}
           }
-        },
+        }),
         method: 'post',
         headers: {
           'content-type': 'application/json',
