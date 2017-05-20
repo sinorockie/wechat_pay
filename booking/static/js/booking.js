@@ -123,6 +123,7 @@ angular.module('booking', [])
 		    			}
 						console.log(angular.fromJson(data));
 		    			$http.post('./payments/create', data).then(function successCallback(response) {
+								console.log(angular.fromJson(response.data));
 					    		var paymentid = WXPay('足球场类订单', response.data.orderid, response.data.fee);
 					    		if (paymentid!=0) {
 					    			data = {
