@@ -154,7 +154,7 @@ exports.pushMsg = function(req, res) {
             "keyword3": {"value": order.period.toString(), "color": "#000000"},
             "keyword4": {"value": order.username, "color": "#000000"},
             "keyword5": {"value": order.usercontact, "color": "#000000"},
-            "remark": {"value": "公司：" + order.company, "color": "#000000"}
+            "remark": {"value": "预定企业：" + order.company, "color": "#000000"}
           }
         }),
         method: 'post',

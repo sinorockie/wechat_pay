@@ -99,6 +99,7 @@ angular.module('booking', [])
 		};
 		$scope.isDone = true;
 		$scope.submit = function() {
+			$scope.isDone = false;
 			var period = [];
 			angular.forEach($scope.selected_periods, function(data,index,array){
 				period.push(data.period);
@@ -141,7 +142,12 @@ angular.module('booking', [])
 							    				}
 							    			}
 							    			$http.post('./orders/update', data).then(function successCallback(response) {
-										    		$scope.isDone = false;
+										    		$http.post('./weixin/pushMsg', {orderid: data.orderid}).then(function successCallback(response) {
+
+										    			}, function errorCallback(response) {
+															$('#errorTips').html("推送确认消息失败");
+															$('#iosDialog2').fadeIn(200);
+												    });
 										        }, function errorCallback(response) {
 													$('#errorTips').html("更新非足球场类订单错误");
 													$('#iosDialog2').fadeIn(200);
@@ -167,7 +173,7 @@ angular.module('booking', [])
 		    			}
 		    			$http.post('./orders/update', data).then(function successCallback(response) {
 					    		$http.post('./weixin/pushMsg', {orderid: data.orderid}).then(function successCallback(response) {
-										$scope.isDone = false;
+
 					    			}, function errorCallback(response) {
 										$('#errorTips').html("推送确认消息失败");
 										$('#iosDialog2').fadeIn(200);
