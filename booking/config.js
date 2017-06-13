@@ -3,7 +3,7 @@
 	secret: "0227af7a51de077f48174423a4a632dc",
 	mch_id: "1465625702",
 	notify_url: 'http://booking.proverseaedu.com/weixin/notify',
-	key: "",
+	key: "21C6962966BC9D9852AD35B831911C3F",
 	init: {
 		"BOOKING_TYPE_LIST": {
 			"FIELD": {"chinese": "足球场"},

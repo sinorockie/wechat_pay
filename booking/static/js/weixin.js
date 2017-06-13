@@ -32,6 +32,7 @@ function WXPay(body, out_trade_no, total_fee) {
             total_fee: total_fee
         }
     }).done(function(data) {
+        console.dir('WXPay[Done]: ' + data);
         wx.chooseWXPay({
             timestamp: data.timeStamp,
             nonceStr: data.nonceStr,
@@ -43,10 +44,10 @@ function WXPay(body, out_trade_no, total_fee) {
                 return data.prepay_id;
             }
         });
-        console.dir(data);
+        console.dir('WXPay[Done]: ' + data);
         return 0;
     }).fail(function(data){
-        console.dir(data);
+        console.dir('WXPay[Fail]: ' + data);
         return 0;
     });
 }

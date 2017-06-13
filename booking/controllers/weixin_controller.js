@@ -69,24 +69,24 @@ exports.preSign = function(req, res) {
     "openid=" + req.session.openid + "&" + 
     "out_trade_no=" + req.query.out_trade_no + "&" + 
     "spbill_create_ip=" + req.ip.match(/\d+\.\d+\.\d+\.\d+/) + "&" + 
-    "total_fee=" + req.query.total_fee + "&" + 
+    "total_fee=" + (req.query.total_fee * 100) + "&" + 
     "trade_type=JSAPI&" + 
     "key=" + config.key;
   var md5 = crypto.createHash('md5');
   md5.update(params, "utf8");
   var sign = md5.digest('hex').toUpperCase();
   var xml = "<xml>" + 
-    "<appid><![CDATA[" + config.appid + "]]></appid>" + 
+    "<appid>" + config.appid + "</appid>" + 
     "<mch_id>" + config.mch_id + "</mch_id>" + 
-    "<nonce_str><![CDATA[" + nonce_str + "]]></nonce_str>" + 
-    "<sign><![CDATA[" + sign + "]]></sign>" + 
+    "<nonce_str>" + nonce_str + "</nonce_str>" + 
+    "<sign>" + sign + "</sign>" + 
     "<body><![CDATA[" + req.query.body + "]]></body>" + 
-    "<out_trade_no><![CDATA[" + req.query.out_trade_no + "]]></out_trade_no>" + 
-    "<total_fee>" + req.query.total_fee + "</total_fee>" + 
-    "<spbill_create_ip><![CDATA[" + "127.0.0.1" + "]]></spbill_create_ip>" + 
-    "<notify_url><![CDATA[" + config.notify_url + "]]></notify_url>" + 
-    "<trade_type><![CDATA[JSAPI]]></trade_type>" + 
-    "<openid><![CDATA[" + req.session.openid + "]]></openid>" +
+    "<out_trade_no>" + req.query.out_trade_no + "</out_trade_no>" + 
+    "<total_fee>" + (req.query.total_fee * 100) + "</total_fee>" + 
+    "<spbill_create_ip>" + req.ip.match(/\d+\.\d+\.\d+\.\d+/) + "</spbill_create_ip>" + 
+    "<notify_url>" + config.notify_url + "</notify_url>" + 
+    "<trade_type>JSAPI</trade_type>" + 
+    "<openid>" + req.session.openid + "</openid>" +
     "</xml>";
   util.log(xml);
   request({
@@ -97,12 +97,14 @@ exports.preSign = function(req, res) {
       'content-type': 'application/xml',
     }
   }, function(error, response, body) {
-    util.log(body);
     parser.parseString(body, function (err, result) {
       if (err) {
-        util.log(err);
+        util.log('preSign[err]: ');
+		util.log(err);
         res.status(500).json({preSign: 0});
       } else if (result.xml.return_code=='SUCCESS' && result.xml.result_code=='SUCCESS') {
+        util.log('preSign[success]: ');
+		util.log(result);
         var ret = {
           appId: config.appid,
           nonceStr: createNonceStr(),
@@ -111,16 +113,17 @@ exports.preSign = function(req, res) {
           package: 'prepay_id='+result.xml.prepay_id
         };
         var string = raw(ret);
-            crypto = require('crypto');
-            md5Obj = crypto.createHash('MD5');
-          md5Obj.update(string);
+        crypto = require('crypto');
+        md5Obj = crypto.createHash('MD5');
+        md5Obj.update(string);
         ret.preSign = md5Obj.digest('HEX');
         
         ret.prepay_id = result.xml.prepay_id;
 
         res.json(ret);
       } else {
-        util.log(result);
+        util.log('preSign[result]: ');
+		util.log(result);
         res.status(500).json({preSign: 0});
       }
     });
