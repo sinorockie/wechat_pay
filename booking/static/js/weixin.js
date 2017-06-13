@@ -13,7 +13,7 @@ $.ajax({
             timestamp : data.timestamp,
             nonceStr : data.nonceStr,
             signature : data.signature,
-            jsApiList : ['hideOptionMenu', 'chooseWXPay']
+            jsApiList : ['hideOptionMenu']
         });
             wx.ready(function(){
             wx.hideOptionMenu();
@@ -32,6 +32,8 @@ function WXPay(body, out_trade_no, total_fee) {
             total_fee: total_fee
         }
     }).done(function(data) {
+		var order_id = out_trade_no;
+		var prepay_id = data.prepay_id;
         WeixinJSBridge.invoke(
             'getBrandWCPayRequest',
             {
@@ -44,13 +46,56 @@ function WXPay(body, out_trade_no, total_fee) {
             },
             function(res){
                 if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                    return 1;
-                } else {
-                    return 0;
+					$.ajax({
+						url : "./payments/update",
+						type : 'post',
+						dataType : 'json',
+						contentType : "application/x-www-form-urlencoded; charset=utf-8",
+						data : {
+							orderid: order_id,
+							update: {
+								paymentid: prepay_id,
+								status: 'PAID'
+							}
+						}
+					}).done(function(data) {
+						
+					}).fail(function(data) {
+						
+					});
+					$.ajax({
+						url : "./orders/update",
+						type : 'post',
+						dataType : 'json',
+						contentType : "application/x-www-form-urlencoded; charset=utf-8",
+						data : {
+							orderid: order_id,
+							update: {
+								status: 'COMPLETED'
+							}
+						}
+					}).done(function(data) {
+						
+					}).fail(function(data) {
+						
+					});
+					$.ajax({
+						url : "./weixin/pushMsg",
+						type : 'post',
+						dataType : 'json',
+						contentType : "application/x-www-form-urlencoded; charset=utf-8",
+						data : {
+							orderid: order_id
+						}
+					}).done(function(data) {
+						
+					}).fail(function(data) {
+						
+					});
                 }
             }
         ); 
     }).fail(function(data){
-        return 0;
+        
     });
 }

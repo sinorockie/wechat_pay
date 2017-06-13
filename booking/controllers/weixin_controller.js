@@ -129,11 +129,11 @@ exports.preSign = function(req, res) {
           package: 'prepay_id='+result.xml.prepay_id
         };
         var string = pRaw(ret)+ "&key=" + config.key;
-		    util.log(string);
         crypto = require('crypto');
         md5Obj = crypto.createHash('MD5');
         md5Obj.update(string);
         ret.paySign = md5Obj.digest('HEX').toUpperCase();
+        ret.prepay_id = result.xml.prepay_id;
         util.log('preSign[ret]: ');
 		    util.log(ret);
         res.json(ret);
@@ -147,7 +147,8 @@ exports.preSign = function(req, res) {
 };
 
 exports.notify = function(req, res) {
-  util.log("notify: " + JSON.stringify(req.body));
+  util.log("notify: " + JSON.stringify(req));
+  util.log("notify: " + req);
 };
 
 var mongoose = require('mongoose'),

@@ -123,44 +123,9 @@ angular.module('booking', [])
 		    				fee: fee
 		    			}
 		    			$http.post('./payments/create', data).then(function successCallback(response) {
-					    		var paymentid = WXPay('足球场类订单', response.data.orderid, response.data.fee);
-					    		if (paymentid>0) {
-					    			data = {
-					    				orderid: response.data.orderid,
-					    				update: {
-					    					paymentid: paymentid,
-					    					status: 'PAID'
-					    				}
-					    			}
-					    			$http.post('./payments/update', data).then(function successCallback(response) {
-							    			data = {
-							    				orderid: orderid,
-							    				update: {
-							    					status: 'COMPLETED'
-							    				}
-							    			}
-							    			$http.post('./orders/update', data).then(function successCallback(response) {
-										    		$http.post('./weixin/pushMsg', {orderid: data.orderid}).then(function successCallback(response) {
-
-										    			}, function errorCallback(response) {
-															$('#errorTips').html("推送确认消息失败");
-															$('#iosDialog2').fadeIn(200);
-												    });
-										        }, function errorCallback(response) {
-													$('#errorTips').html("更新非足球场类订单错误");
-													$('#iosDialog2').fadeIn(200);
-										    });
-								        }, function errorCallback(response) {
-											$('#errorTips').html("更新非球场类支付订单错误");
-											$('#iosDialog2').fadeIn(200);
-								    });
-					    		} else {
-									$('#errorTips').html("创建球场类支付订单错误");
-									$('#iosDialog2').fadeIn(200);
-					    		}
+								WXPay('足球场类订单', response.data.orderid, response.data.fee);
 					        }, function errorCallback(response) {
-								$('#errorTips').html("创建球场类支付订单错误");
-								$('#iosDialog2').fadeIn(200);
+								
 					    });
 		    		} else {
 		    			data = {
@@ -173,17 +138,14 @@ angular.module('booking', [])
 					    		$http.post('./weixin/pushMsg', {orderid: data.orderid}).then(function successCallback(response) {
 
 					    			}, function errorCallback(response) {
-										$('#errorTips').html("推送确认消息失败");
-										$('#iosDialog2').fadeIn(200);
+										
 							    });
 					        }, function errorCallback(response) {
-								$('#errorTips').html("更新非足球场类订单错误");
-								$('#iosDialog2').fadeIn(200);
+								
 					    });
 		    		}
 		        }, function errorCallback(response) {
-					$('#errorTips').html("创建非球场类订单错误");
-					$('#iosDialog2').fadeIn(200);
+					
 		    });
 		};
 
