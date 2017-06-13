@@ -15,7 +15,7 @@ $.ajax({
             signature : data.signature,
             jsApiList : ['hideOptionMenu', 'chooseWXPay']
         });
-    wx.ready(function(){
+            wx.ready(function(){
             wx.hideOptionMenu();
         });
 });
@@ -33,21 +33,47 @@ function WXPay(body, out_trade_no, total_fee) {
         }
     }).done(function(data) {
         console.dir('WXPay[Done]: ' + data);
-        wx.chooseWXPay({
-            timestamp: data.timeStamp,
-            nonceStr: data.nonceStr,
-            package: data.package,
-            signType: data.signType,
-            paySign: data.paySign,
-            success: function (res) {
-                console.dir(res);
-                return data.prepay_id;
+        // wx.chooseWXPay({
+        //     timestamp: data.timeStamp,
+        //     nonceStr: data.nonceStr,
+        //     package: data.package,
+        //     signType: data.signType,
+        //     paySign: data.paySign,
+        //     success: function (res) {
+        //         console.dir(res);
+        //         return data.prepay_id;
+        //     }
+        // });
+
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest',
+            {
+                "appId": data.appId,
+                "timeStamp": data.timeStamp,
+                "nonceStr": data.nonceStr,    
+                "package": data.package,
+                "signType": data.signType,
+                "paySign": data.paySign
+            },
+            function(res){     
+                WeixinJSBridge.log(res.err_msg);
+                alert(res.err_code+res.err_desc+res.err_msg);
+                console.dir('WXPay[OK]: ' + data);
             }
-        });
+        ); 
         console.dir('WXPay[Done]: ' + data);
         return 0;
     }).fail(function(data){
         console.dir('WXPay[Fail]: ' + data);
         return 0;
     });
+}
+
+if (typeof WeixinJSBridge == "undefined"){
+   if( document.addEventListener ){
+       document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+   }else if (document.attachEvent){
+       document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+       document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+   }
 }
