@@ -1,6 +1,6 @@
 {
 	"name": "ningbo",
-	"version": "2017.04.07",
+	"version": "2017.06.13",
 	"description": "booking",
 	"repository": {
 		"type": "git",
@@ -26,6 +26,7 @@
 		"moment": "latest",
 		"jssha": "2.2.0",
 		"xml2js": "0.4.17",
+		"xml2json": "0.11.0",
 		"request-promise": "4.2.1"
 	}
 }

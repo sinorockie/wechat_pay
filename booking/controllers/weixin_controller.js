@@ -146,15 +146,17 @@ exports.preSign = function(req, res) {
   });
 };
 
+var xml2json = require('xml2json');
 exports.notify = function(req, res) {
-  parser.parseString(body, function (err, result) {
-    if (err) {
-      util.log('notify[err]: ');
-      util.log(err);
-    } else {
-      util.log('notify[result]: ');
-      util.log(result);
-    }
+  req.rawBody = '';
+  var json={};
+  req.setEncoding('utf8');
+  req.on('data', function(chunk) { 
+    req.rawBody += chunk;
+  });
+  req.on('end', function() {
+	json = xml2json.toJson(req.rawBody);
+	util.log(json);
   });
   res.writeHead(200, {'Content-Type': 'application/xml'});
   res.end('<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>');
