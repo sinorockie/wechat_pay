@@ -147,8 +147,17 @@ exports.preSign = function(req, res) {
 };
 
 exports.notify = function(req, res) {
-  util.log("notify: " + JSON.stringify(req));
-  util.log("notify: " + req);
+  parser.parseString(body, function (err, result) {
+    if (err) {
+      util.log('notify[err]: ');
+      util.log(err);
+    } else {
+      util.log('notify[result]: ');
+      util.log(result);
+    }
+  });
+  res.writeHead(200, {'Content-Type': 'application/xml'});
+  res.end('<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>');
 };
 
 var mongoose = require('mongoose'),
