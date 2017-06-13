@@ -32,6 +32,22 @@ var raw = function (args) {
   return string;
 };
 
+var pRaw = function (args) {
+  var keys = Object.keys(args);
+  keys = keys.sort()
+  var newArgs = {};
+  keys.forEach(function (key) {
+    newArgs[key] = args[key];
+  });
+
+  var string = '';
+  for (var k in newArgs) {
+    string += '&' + k + '=' + newArgs[k];
+  }
+  string = string.substr(1);
+  return string;
+};
+
 /**
 * @synopsis 签名算法 
 *
@@ -108,18 +124,18 @@ exports.preSign = function(req, res) {
         var ret = {
           appId: config.appid,
           nonceStr: createNonceStr(),
-          timeStamp: createTimestamp(),
           signType: 'MD5',
+          timeStamp: createTimestamp(),
           package: 'prepay_id='+result.xml.prepay_id
         };
-        var string = raw(ret);
+        var string = pRaw(ret)+ "&key=" + config.key;
+		util.log(string);
         crypto = require('crypto');
         md5Obj = crypto.createHash('MD5');
         md5Obj.update(string);
-        ret.preSign = md5Obj.digest('HEX');
-        
-        ret.prepay_id = result.xml.prepay_id;
-
+        ret.paySign = md5Obj.digest('HEX').toUpperCase();
+        util.log('preSign[ret]: ');
+		util.log(ret);
         res.json(ret);
       } else {
         util.log('preSign[result]: ');

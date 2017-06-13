@@ -34,7 +34,6 @@ function WXPay(body, out_trade_no, total_fee) {
     }).done(function(data) {
         console.dir('WXPay[Done]: ');
 		console.dir(data);
-
         WeixinJSBridge.invoke(
             'getBrandWCPayRequest',
             {
@@ -45,25 +44,14 @@ function WXPay(body, out_trade_no, total_fee) {
                 "signType": data.signType,
                 "paySign": data.paySign
             },
-            function(res){     
-                WeixinJSBridge.log(res.err_msg);
-                alert(res.err_code+res.err_desc+res.err_msg);
-                console.dir('WXPay[OK]: ');
-                console.dir(res);
+            function(res){
+                alert(res.err_desc);
             }
         ); 
         return 0;
     }).fail(function(data){
-        console.dir('WXPay[Fail]: ' + data);
+        console.dir('WXPay[Fail]: ');
+		console.dir(data);
         return 0;
     });
-}
-
-if (typeof WeixinJSBridge == "undefined"){
-   if( document.addEventListener ){
-       document.addEventListener('WeixinJSBridgeReady', WXPay, false);
-   }else if (document.attachEvent){
-       document.attachEvent('WeixinJSBridgeReady', WXPay); 
-       document.attachEvent('onWeixinJSBridgeReady', WXPay);
-   }
 }
