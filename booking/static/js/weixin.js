@@ -32,8 +32,6 @@ function WXPay(body, out_trade_no, total_fee) {
             total_fee: total_fee
         }
     }).done(function(data) {
-        console.dir('WXPay[Done]: ');
-		console.dir(data);
         WeixinJSBridge.invoke(
             'getBrandWCPayRequest',
             {
@@ -45,13 +43,14 @@ function WXPay(body, out_trade_no, total_fee) {
                 "paySign": data.paySign
             },
             function(res){
-                alert(res.err_desc);
+                if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                    return 1;
+                } else {
+                    return 0;
+                }
             }
         ); 
-        return 0;
     }).fail(function(data){
-        console.dir('WXPay[Fail]: ');
-		console.dir(data);
         return 0;
     });
 }

@@ -89,7 +89,7 @@ exports.preSign = function(req, res) {
     "trade_type=JSAPI&" + 
     "key=" + config.key;
   var md5 = crypto.createHash('md5');
-  md5.update(params, "utf8");
+      md5.update(params, "utf8");
   var sign = md5.digest('hex').toUpperCase();
   var xml = "<xml>" + 
     "<appid>" + config.appid + "</appid>" + 
@@ -116,11 +116,11 @@ exports.preSign = function(req, res) {
     parser.parseString(body, function (err, result) {
       if (err) {
         util.log('preSign[err]: ');
-		util.log(err);
+		    util.log(err);
         res.status(500).json({preSign: 0});
       } else if (result.xml.return_code=='SUCCESS' && result.xml.result_code=='SUCCESS') {
         util.log('preSign[success]: ');
-		util.log(result);
+		    util.log(result);
         var ret = {
           appId: config.appid,
           nonceStr: createNonceStr(),
@@ -129,17 +129,17 @@ exports.preSign = function(req, res) {
           package: 'prepay_id='+result.xml.prepay_id
         };
         var string = pRaw(ret)+ "&key=" + config.key;
-		util.log(string);
+		    util.log(string);
         crypto = require('crypto');
         md5Obj = crypto.createHash('MD5');
         md5Obj.update(string);
         ret.paySign = md5Obj.digest('HEX').toUpperCase();
         util.log('preSign[ret]: ');
-		util.log(ret);
+		    util.log(ret);
         res.json(ret);
       } else {
         util.log('preSign[result]: ');
-		util.log(result);
+		    util.log(result);
         res.status(500).json({preSign: 0});
       }
     });
@@ -147,7 +147,7 @@ exports.preSign = function(req, res) {
 };
 
 exports.notify = function(req, res) {
-  res.json(JSON.stringify(req));
+  util.log("notify: " + JSON.stringify(req.body));
 };
 
 var mongoose = require('mongoose'),
@@ -155,10 +155,9 @@ var mongoose = require('mongoose'),
 var moment = require('moment');
 
 exports.pushMsg = function(req, res) {
-  util.log("orderid: " + req.body.orderid);
   Order.findOne({orderid: req.body.orderid})
     .exec(function(err, order) {
-      util.log("order: " + JSON.stringify(order));
+      util.log("pushMsg order: " + JSON.stringify(order));
       request({
         url: "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+global.access_token,
         body: JSON.stringify({
@@ -181,7 +180,7 @@ exports.pushMsg = function(req, res) {
           'content-type': 'application/json',
         }
       }, function(error, response, body) {
-        util.log(JSON.stringify(body));
+        util.log("pushMsg error: " + JSON.stringify(body));
         res.status(200).json(JSON.stringify(body));
       });
     });
