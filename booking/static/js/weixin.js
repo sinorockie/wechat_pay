@@ -35,23 +35,23 @@ function WXPay(body, out_trade_no, total_fee) {
         console.dir('WXPay[Done]: ');
 		console.dir(data);
 
-        WeixinJSBridge.invoke(
-            'getBrandWCPayRequest',
-            {
-                "appId": data.appId,
-                "timeStamp": data.timeStamp,
-                "nonceStr": data.nonceStr,    
-                "package": data.package,
-                "signType": data.signType,
-                "paySign": data.paySign
-            },
-            function(res){     
-                WeixinJSBridge.log(res.err_msg);
-                alert(res.err_code+res.err_desc+res.err_msg);
-                console.dir('WXPay[OK]: ');
-                console.dir(res);
-            }
-        ); 
+        // WeixinJSBridge.invoke(
+        //     'getBrandWCPayRequest',
+        //     {
+        //         "appId": data.appId,
+        //         "timeStamp": data.timeStamp,
+        //         "nonceStr": data.nonceStr,    
+        //         "package": data.package,
+        //         "signType": data.signType,
+        //         "paySign": data.paySign
+        //     },
+        //     function(res){     
+        //         WeixinJSBridge.log(res.err_msg);
+        //         alert(res.err_code+res.err_desc+res.err_msg);
+        //         console.dir('WXPay[OK]: ');
+        //         console.dir(res);
+        //     }
+        // ); 
         return 0;
     }).fail(function(data){
         console.dir('WXPay[Fail]: ' + data);
