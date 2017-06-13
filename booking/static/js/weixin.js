@@ -32,18 +32,8 @@ function WXPay(body, out_trade_no, total_fee) {
             total_fee: total_fee
         }
     }).done(function(data) {
-        console.dir('WXPay[Done]: ' + data);
-        // wx.chooseWXPay({
-        //     timestamp: data.timeStamp,
-        //     nonceStr: data.nonceStr,
-        //     package: data.package,
-        //     signType: data.signType,
-        //     paySign: data.paySign,
-        //     success: function (res) {
-        //         console.dir(res);
-        //         return data.prepay_id;
-        //     }
-        // });
+        console.dir('WXPay[Done]: ');
+		console.dir(data);
 
         WeixinJSBridge.invoke(
             'getBrandWCPayRequest',
@@ -58,10 +48,10 @@ function WXPay(body, out_trade_no, total_fee) {
             function(res){     
                 WeixinJSBridge.log(res.err_msg);
                 alert(res.err_code+res.err_desc+res.err_msg);
-                console.dir('WXPay[OK]: ' + data);
+                console.dir('WXPay[OK]: ');
+                console.dir(res);
             }
         ); 
-        console.dir('WXPay[Done]: ' + data);
         return 0;
     }).fail(function(data){
         console.dir('WXPay[Fail]: ' + data);
@@ -71,9 +61,9 @@ function WXPay(body, out_trade_no, total_fee) {
 
 if (typeof WeixinJSBridge == "undefined"){
    if( document.addEventListener ){
-       document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+       document.addEventListener('WeixinJSBridgeReady', WXPay, false);
    }else if (document.attachEvent){
-       document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
-       document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+       document.attachEvent('WeixinJSBridgeReady', WXPay); 
+       document.attachEvent('onWeixinJSBridgeReady', WXPay);
    }
 }
