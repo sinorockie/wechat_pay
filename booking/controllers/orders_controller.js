@@ -57,18 +57,12 @@ exports.getOrders = function(req, res) {
 	}
 	util.log('from: ' + fDate.format('YYYY-MM-DD HH:mm:ss ZZ'));
 	util.log('to: ' + tDate.format('YYYY-MM-DD HH:mm:ss ZZ'));
-	Order.find({'bookingdate': {$gte: fDate.toDate(), $lte: tDate.toDate()}, 'status': 'COMPLETED'}, {sort: [['bookingdate', 'asc'], ['orderid', 'asc']]}).exec(function(err, orders) {
+	Order.find({'bookingdate': {$gte: fDate.toDate(), $lte: tDate.toDate()}, 'status': 'COMPLETED'}, 'bookingdate bookingtype period username usercontact company', {sort: 'bookingdate'}).exec(function(err, orders) {
 		if (err) {
 			util.log(err);
 		} else {
-			var list = [];
-			for (var i=0; i<orders.length; i++) {
-				Order.findOne({_id: orders[i]._id}).exec(function(err, order) {
-					util.log('bookingdate: ' + moment(order.bookingdate).format('YYYY-MM-DD HH:mm:ss ZZ'));
-					list[i] = order;
-				});
-			}
+			util.log(orders);
+			res.json({list: orders});
 		}
-		res.render('list', {list: list});
 	});
 };

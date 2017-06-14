@@ -15,7 +15,18 @@ angular.module('querying', [])
 					toDate: $scope.to_date
 		        };
 		    console.log(angular.fromJson(data));
-			$http.post('./orders/get', data).then(function successCallback(response) {
+			$http.post('./get', data).then(function successCallback(response) {
+					var orderList = response.data.list;
+					var periodString = "";
+					angular.forEach(orderList, function(data,index,array){
+						data.bookingdate = $filter('date')(new Date(data.bookingdate), "yyyy-MM-dd");
+						periodString = "";
+						angular.forEach(data.period, function(data,index,array){
+							periodString += data + ",";
+						});
+						periodString = periodString.substr(0, periodString.length-1);
+						data.period = periodString;
+					});
 		    		$scope.list = response.data.list;
 		        }, function errorCallback(response) {
 					
