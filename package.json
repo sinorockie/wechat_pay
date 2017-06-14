@@ -7,26 +7,26 @@
 		"location": "https://github.com/sinorockie/ningbo.git"
 	},
 	"scripts": {
-	    "start": "node ./booking/server.js"
+		"start": "node ./booking/server.js"
 	},
 	"license": "MIT",
 	"dependencies": {
-		"express": "latest",
-		"ejs": "latest",
-		"mongodb": "latest",
-		"mongoose": "latest",
-		"body-parser": "latest",
-		"cookie-parser": "latest",
-		"express-session": "latest",
-		"connect-mongo": "latest",
-		"request": "latest",
-		"weui": "latest",
 		"angular": "1.5.11",
+		"body-parser": "1.17.2",
+		"connect-mongo": "latest",
+		"cookie-parser": "latest",
+		"ejs": "latest",
+		"express": "4.14.1",
+		"express-session": "1.14.2",
 		"jquery": "3.1.0",
-		"moment": "latest",
 		"jssha": "2.2.0",
+		"moment": "latest",
+		"mongodb": "2.2.28",
+		"mongoose": "latest",
+		"request": "latest",
+		"request-promise": "4.2.1",
+		"weui": "latest",
 		"xml2js": "0.4.17",
-		"xml2json": "0.11.0",
-		"request-promise": "4.2.1"
+		"xml2json": "0.11.0"
 	}
 }
