@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh" ng-app="querying">
+    <head>
+        <meta charset="UTF-8">
+        <title>预订查询</title>
+        <script type="text/javascript" src="/angular/angular.js"></script>
+        <script type="text/javascript" src="/jquery/jquery.js"></script>
+        <script type="text/javascript" src="/static/js/querying.js"></script>
+    </head>
+    <body>
+        <div ng-controller="list">
+            <form action="./list" method="post">
+                <input name='fromDate' type='hidden' value='{{from_date}}'>
+                <input name='toDate' type='hidden' value='{{to_date}}'>
+                <div style='text-align: center;'>Open ID: <%=openid%></div>
+                <div>
+                    <table>
+                        <tr>
+                            <td>起始日期</td>
+                            <td><input name='fDate' type='date' ng-model='input_from_date'></td>
+                            <td>截止日期</td>
+                            <td><input name='tDate' type='date' ng-model='input_to_date'></td>
+                            <td><input type='submit' value='提交'></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>预定时间</td>
+                            <td>预定类型</td>
+                            <td>预定时段</td>
+                            <td>姓名</td>
+                            <td>手机</td>
+                            <td>公司</td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

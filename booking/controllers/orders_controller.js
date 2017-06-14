@@ -39,3 +39,33 @@ exports.updateOrder = function(req, res) {
 		}
 	})
 };
+
+exports.showOrders = function(req, res) {
+	var fDate = moment();
+	if (typeof req.query.fromDate != 'undefined' && req.query.fromDate != '') {
+		fDate = moment(req.query.fromDate + ' 00:00:00', 'YYYY-MM-DD HH:mm:ss');
+	} else if (req.body.fromDate != '') {
+		fDate = moment(req.body.fromDate + ' 00:00:00', 'YYYY-MM-DD HH:mm:ss');
+	} else {
+		fDate.hour(0);
+		fDate.minute(0);
+		fDate.second(0);
+	}
+	var tDate = moment();
+	if (typeof req.query.toDate != 'undefined' && req.query.toDate != '') {
+		tDate = moment(req.query.toDate + ' 23:59:59', 'YYYY-MM-DD HH:mm:ss');
+	} else if (req.body.toDate != '') {
+		tDate = moment(req.body.toDate + ' 23:59:59', 'YYYY-MM-DD HH:mm:ss');
+	} else {
+		tDate.hour(23);
+		tDate.minute(59);
+		tDate.second(59);
+	}
+	util.log('showOrders.fDate: ' + fDate.format('YYYY-MM-DD HH:mm:ss'));
+	util.log('showOrders.tDate: ' + tDate.format('YYYY-MM-DD HH:mm:ss'));
+	var list = [];
+	Order.find({'bookingdate': {$lte: fDate, $gte: tDate}}, {sort:{'bookingdate': 1, 'orderid': 1}}).exec(function(err, orders) {
+		list = orders;
+	});
+	res.render('list', {openid: req.session.openid, list: list});
+};
