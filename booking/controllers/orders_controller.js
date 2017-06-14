@@ -40,7 +40,7 @@ exports.updateOrder = function(req, res) {
 	})
 };
 
-exports.showOrders = function(req, res) {
+exports.getOrders = function(req, res) {
 	var fDate = moment(req.body.fromDate + ' 00:00:00', 'YYYY-MM-DD HH:mm:ss');
 	if (!fDate.isValid()) {
 		fDate = moment();

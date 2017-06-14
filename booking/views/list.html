@@ -9,30 +9,34 @@
     </head>
     <body>
         <div ng-controller="list">
-            <form action="./list" method="post">
-                <input name='fromDate' type='hidden' value='{{from_date}}'>
-                <input name='toDate' type='hidden' value='{{to_date}}'>
-                <div>
-                    <table>
-                        <tr>
-                            <td>起始日期</td>
-                            <td><input name='fDate' type='date' ng-model='input_from_date'></td>
-                            <td>截止日期</td>
-                            <td><input name='tDate' type='date' ng-model='input_to_date'></td>
-                            <td><input type='submit' value='提交'></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>预定时间</td>
-                            <td>预定类型</td>
-                            <td>预定时段</td>
-                            <td>姓名</td>
-                            <td>手机</td>
-                            <td>公司</td>
-                        </tr>
-                    </table>
-                </div>
-            </form>
+            <div>
+                <table>
+                    <tr>
+                        <td>起始日期</td>
+                        <td><input name='fDate' type='date' ng-model='input_from_date'></td>
+                        <td>截止日期</td>
+                        <td><input name='tDate' type='date' ng-model='input_to_date'></td>
+                        <td><input type='button' value='提交' ng-click="submit();"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>预定时间</td>
+                        <td>预定类型</td>
+                        <td>预定时段</td>
+                        <td>姓名</td>
+                        <td>手机</td>
+                        <td>公司</td>
+                    </tr>
+                    <tr ng-repeat='order in list'>
+                        <td>预定时间</td>
+                        <td>预定类型</td>
+                        <td>预定时段</td>
+                        <td>姓名</td>
+                        <td>手机</td>
+                        <td>公司</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </body>
 </html>
