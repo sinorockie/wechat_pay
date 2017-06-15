@@ -90,11 +90,7 @@ angular.module('booking', [])
 			$scope.selected_periods = $filter('orderBy')($scope.selected_periods, 'period');
 			$scope.booking_period = [];
 			angular.forEach($scope.selected_periods, function(data,index,array){
-				if (index%2==0) {
-					$scope.booking_period.push([data]);
-				} else {
-					$scope.booking_period[Math.floor(index/2)].push(data);
-				}
+				$scope.booking_period.push(data);
 			});
 		};
 		$scope.isDone = true;
@@ -117,33 +113,43 @@ angular.module('booking', [])
 			$http.post('./orders/create', data).then(function successCallback(response) {
 		    		var orderid = response.data.orderid;
 		    		var fee = $scope.booking_fee;
-		    		if ($scope.booking_fee>0) {
-		    			data = {
-		    				orderid: orderid,
-		    				fee: fee
-		    			}
-		    			$http.post('./payments/create', data).then(function successCallback(response) {
-								WXPay('足球场类订单', response.data.orderid, response.data.fee);
-					        }, function errorCallback(response) {
-								
-					    });
-		    		} else {
-		    			data = {
-		    				orderid: response.data.orderid,
-		    				update: {
-		    					status: 'COMPLETED'
-		    				}
-		    			}
-		    			$http.post('./orders/update', data).then(function successCallback(response) {
-					    		$http.post('./weixin/pushMsg', {orderid: data.orderid}).then(function successCallback(response) {
+					if (response.data.orderid != 0) {
+						if ($scope.booking_fee>0) {
+							data = {
+								orderid: orderid,
+								fee: fee
+							}
+							$http.post('./payments/create', data).then(function successCallback(response) {
+									WXPay('足球场类订单', response.data.orderid, response.data.fee);
+								}, function errorCallback(response) {
+									
+							});
+						} else {
+							data = {
+								orderid: response.data.orderid,
+								update: {
+									status: 'COMPLETED'
+								}
+							}
+							$http.post('./orders/update', data).then(function successCallback(response) {
+									$http.post('./weixin/pushMsg', {orderid: data.orderid}).then(function successCallback(response) {
 
-					    			}, function errorCallback(response) {
-										
-							    });
-					        }, function errorCallback(response) {
-								
-					    });
-		    		}
+										}, function errorCallback(response) {
+											
+									});
+								}, function errorCallback(response) {
+									
+							});
+						}
+					} else {
+						var periodString = "";
+						angular.forEach(response.data.period, function(data,index,array){
+							periodString += "<br>" + data + ",";
+						});
+						periodString = periodString.substr(0, periodString.length-1) + "&nbsp";
+						$('#errorTips').html("以下时间段已被预定:" + periodString);
+						$('#iosDialog2').fadeIn(200);
+					}
 		        }, function errorCallback(response) {
 					
 		    });

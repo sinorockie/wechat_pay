@@ -16,13 +16,43 @@ exports.createOrder = function(req, res) {
 		bookingfee: req.body.bookingfee,
 		period: req.body.period
 	});
-	newOrder.save(function(err, results){
+	Order.find({'bookingdate': moment(req.body.bookingdate, 'YYYY-MM-DD'), 'bookingtype': req.body.bookingtype, 'status': 'COMPLETED'}, 'period').exec(function(err, orders) {
 		if (err) {
-			util.log("save order error: " + err);
-			util.log("save order error: " + newOrder);
-			res.status(500).json("failed to save order");
+			util.log(err);
 		} else {
-			res.json({orderid: newOrder.orderid});
+			util.log(orders);
+			var periodArray = [], periodHash={};
+			for (var i=0, ilength=orders.length; i<ilength; ++i) {
+				for (var j=0, jlength=orders[i].period.length; j<jlength; ++j) {
+					if (!periodHash[orders[i].period[j]]) {
+						periodHash[orders[i].period[j]] = true;
+						periodArray.push(orders[i].period[j]);
+					}
+				}
+			}
+			util.log(periodArray);
+			var periodError = [];
+			for (var i=0, ilength=periodArray.length; i<ilength; ++i) {
+				for (var j=0, jlength=req.body.period.length; j<jlength; ++j) {
+					if (periodArray[i]==req.body.period[j]) {
+						periodError.push(periodArray[i]);
+					}
+				}
+			}
+			util.log(periodError);
+			if (periodError.length==0) {
+				newOrder.save(function(err, results){
+					if (err) {
+						util.log("save order error: " + err);
+						util.log("save order error: " + newOrder);
+						res.status(500).json("failed to save order");
+					} else {
+						res.json({orderid: newOrder.orderid});
+					}
+				});
+			} else {
+				res.json({orderid: 0, period: periodError});
+			}
 		}
 	});
 };
