@@ -46,6 +46,8 @@ module.exports = function(app){
 				res.send("err: " + JSON.stringify(err));
 			});
 	});
+	
+	app.get('/test', function(req, res){res.render('test')});
 
 	var init = require('./controllers/init_controller');
 	app.get('/init', init);
