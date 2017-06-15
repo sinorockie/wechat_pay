@@ -57,7 +57,7 @@ exports.getOrders = function(req, res) {
 	}
 	util.log('from: ' + fDate.format('YYYY-MM-DD HH:mm:ss ZZ'));
 	util.log('to: ' + tDate.format('YYYY-MM-DD HH:mm:ss ZZ'));
-	Order.find({'bookingdate': {$gte: fDate.toDate(), $lte: tDate.toDate()}, 'status': 'COMPLETED'}, 'bookingdate bookingtype period username usercontact company', {sort: 'bookingdate'}).exec(function(err, orders) {
+	Order.find({'bookingdate': {$gte: fDate.toDate(), $lte: tDate.toDate()}, 'status': 'COMPLETED'}, 'orderid bookingdate bookingtype period username usercontact company', {sort: 'bookingdate'}).exec(function(err, orders) {
 		if (err) {
 			util.log(err);
 		} else {

@@ -12,14 +12,16 @@
             <div>
                 <table>
                     <tr>
+                        <td>&nbsp;</td>
                         <td>起始日期</td>
                         <td><input name='fDate' type='date' ng-model='input_from_date'></td>
                         <td>截止日期</td>
                         <td><input name='tDate' type='date' ng-model='input_to_date'></td>
                         <td><input type='button' value='提交' ng-click="submit();"></td>
-                        <td></td>
+                        <td>&nbsp;</td>
                     </tr>
                     <tr>
+                        <td>预定单号</td>
                         <td>预定时间</td>
                         <td>预定类型</td>
                         <td>预定时段</td>
@@ -28,6 +30,7 @@
                         <td>公司</td>
                     </tr>
                     <tr ng-repeat='order in list'>
+                        <td>{{order.orderid}}</td>
                         <td>{{order.bookingdate}}</td>
                         <td>{{order.bookingtype}}</td>
                         <td>{{order.period}}</td>
