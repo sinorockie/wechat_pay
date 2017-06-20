@@ -8,7 +8,9 @@
 		"BOOKING_TYPE_LIST": {
 			"FIELD": {"chinese": "足球场"},
 			"BAR": {"chinese": "书吧/咖啡厅"},
-			"ROOM": {"chinese": "会议室"}
+			"MEETINGROOMFL1": {"chinese": "一层会议室"},
+			"MEETINGROOMFL2": {"chinese": "二层会议室"},
+			"MEETINGROOMFL3": {"chinese": "三层会议室"}
 		},
 		"BOOKING_PERIOD_LIST": [
 			{"period": "09:00-09:59"},
@@ -27,6 +29,7 @@
 			{"company": ""},
 			{"company": "朴洛教育科技（上海）有限公司"}
 		],
-		"UNIT_PRICE": 0.01
+		"UNIT_PRICE": 0.01,
+		"SERVICE_PRICE": 0.01
 	}
 }

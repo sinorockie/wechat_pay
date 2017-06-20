@@ -63,6 +63,7 @@ module.exports = function(app){
 	app.post('/orders/update', orders.updateOrder);
 	app.get('/orders/list', function(req, res){res.render('list')});
 	app.post('/orders/get', orders.getOrders);
+	app.post('/orders/period', orders.getPeriods);
 
 	var payments = require('./controllers/payments_controller');
 	app.post('/payments/create', payments.createPayment);

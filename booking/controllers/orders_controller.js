@@ -96,3 +96,30 @@ exports.getOrders = function(req, res) {
 		}
 	});
 };
+
+exports.getPeriods = function(req, res) {
+	var fDate = moment(req.body.fromDate + ' 00:00:00', 'YYYY-MM-DD HH:mm:ss');
+	if (!fDate.isValid()) {
+		fDate = moment();
+		fDate.hour(0);
+		fDate.minute(0);
+		fDate.second(0);
+	}
+	var tDate = moment(req.body.toDate + ' 23:59:59', 'YYYY-MM-DD HH:mm:ss');
+	if (!tDate.isValid()) {
+		tDate = moment();
+		tDate.hour(23);
+		tDate.minute(59);
+		tDate.second(59);
+	}
+	util.log('from: ' + fDate.format('YYYY-MM-DD HH:mm:ss ZZ'));
+	util.log('to: ' + tDate.format('YYYY-MM-DD HH:mm:ss ZZ'));
+	Order.find({'bookingdate': {$gte: fDate.toDate(), $lte: tDate.toDate()}, 'status': 'COMPLETED', 'bookingtype': req.body.bookingType}, 'period username company', {sort: 'bookingdate'}).exec(function(err, orders) {
+		if (err) {
+			util.log(err);
+		} else {
+			util.log(orders);
+			res.json({list: orders});
+		}
+	});
+};

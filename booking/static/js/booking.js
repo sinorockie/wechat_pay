@@ -15,17 +15,27 @@ angular.module('booking', [])
 		$scope.booking_company = "";
 		$scope.booking_user = "";
 		$scope.booking_contact = "";
+		$scope.input_booking_date = new Date();
+		$scope.booking_service = false;
 
 		$scope.partOne = true;
 		$scope.partTwo = false;
 		$scope.partThree = false;
 		$scope.partFour = false;
+		$scope.partFive = false;
 		$scope.nextStep = function(partNumber) {
-			if (partNumber == 2) {
+			if (partNumber == 1) {
+				$scope.partOne = true;
+				$scope.partTwo = false;
+				$scope.partThree = false;
+				$scope.partFour = false;
+				$scope.partFive = false;
+			} else if (partNumber == 2) {
 				$scope.partOne = false;
 				$scope.partTwo = true;
 				$scope.partThree = false;
 				$scope.partFour = false;
+				$scope.partFive = false;
 			} else if (partNumber == 3) {
 				if (angular.equals($scope.booking_date, undefined) || angular.equals($scope.booking_date, null)) {
 					$('#errorTips').html("请选择预定日期");
@@ -42,6 +52,7 @@ angular.module('booking', [])
 				$scope.partTwo = false;
 				$scope.partThree = true;
 				$scope.partFour = false;
+				$scope.partFive = false;
 			} else if (partNumber == 4) {
 				if ($scope.isField==false) {
 					if (angular.equals($scope.booking_company, undefined) || angular.equals($scope.booking_company, '') || angular.equals($scope.booking_company, null)) {
@@ -62,20 +73,61 @@ angular.module('booking', [])
 				} else {
 					$('#errorTips').html("");
 				}
+				if ($scope.isField) {
+					$scope.booking_fee = $scope.inits['UNIT_PRICE'] * $scope.selected_units;
+				} else if (!$scope.isBar && $scope.booking_service) {
+					$scope.booking_fee = $scope.inits['SERVICE_PRICE'];
+				} else {
+					$scope.booking_fee = 0.0;
+				}
 				$scope.partOne = false;
 				$scope.partTwo = false;
 				$scope.partThree = false;
 				$scope.partFour = true;
+			} else if (partNumber == 5) {
+				$scope.partOne = false;
+				$scope.partTwo = false;
+				$scope.partThree = false;
+				$scope.partFour = false;
+				$scope.partFive = true;
 			}
 		}
 
 		$scope.isField = false;
+		$scope.isBar = false;
 		$scope.setBookingType = function(newBookingType) {
 			if (!angular.equals($scope.inits, {})) {
 				$scope.booking_type = $scope.inits['BOOKING_TYPE_LIST'][newBookingType].chinese;
-				$scope.period_list = $scope.inits['BOOKING_PERIOD_LIST'];
 				$scope.company_list = $scope.inits['BOOKING_COMPANY_LIST'];
+				var data = {
+						fromDate: $scope.input_booking_date,
+						toDate: $scope.input_booking_date,
+						bookingType: $scope.booking_type
+					};
+				$http.post('./orders/period', data).then(function successCallback(response) {
+						$scope.booked_list = response.data.list;
+						var tmp = [];
+						angular.forEach($scope.inits['BOOKING_PERIOD_LIST'], function(data,index,array){
+							var flag = false;
+							angular.forEach(response.data.list, function(ld,li,la){
+								angular.forEach(ld.period, function(pd,pi,pa){
+									if (data.period==pd) {
+										flag = true;
+									}
+								});
+							});
+							if (!flag) {
+								tmp.push(data);
+							}
+						});
+						$scope.period_list = tmp;
+					}, function errorCallback(response) {
+						
+				});
 			}
+		};
+		$scope.setBookingService = function() {
+			$scope.booking_service = !$scope.booking_service;
 		};
 		$scope.selected_periods = [];
 		$scope.selected_units = 0;
@@ -120,7 +172,7 @@ angular.module('booking', [])
 								fee: fee
 							}
 							$http.post('./payments/create', data).then(function successCallback(response) {
-									WXPay('足球场类订单', response.data.orderid, response.data.fee);
+									WXPay($scope.booking_type + '订单', response.data.orderid, response.data.fee);
 								}, function errorCallback(response) {
 									
 							});
@@ -158,20 +210,37 @@ angular.module('booking', [])
 		$scope.$watch('booking_type', function(newBookingType, oldBookingType) {
 			if (!angular.equals($scope.inits, {})) {
 				$scope.isField = $scope.booking_type == $scope.inits['BOOKING_TYPE_LIST']['FIELD'].chinese;
-				if ($scope.isField) {
-					$scope.unit_price = $scope.inits['UNIT_PRICE'];
-				} else {
-					$scope.unit_price = 0.0;
-				}
+				$scope.isBar = $scope.booking_type == $scope.inits['BOOKING_TYPE_LIST']['BAR'].chinese;
 			}
 		});
-		$scope.$watch('selected_units', function(newSelectedUnits, oldSelectedUnits) {
-			if (!angular.equals($scope.inits, {})) {
-				$scope.booking_fee = $scope.unit_price * $scope.selected_units;
-			}
-		});
+		$scope.booked_list = [];
 		$scope.$watch('input_booking_date', function(newDate, oldDate) {
 			$scope.booking_date = $filter('date')(newDate, "yyyy-MM-dd");
+			var data = {
+					fromDate: newDate,
+					toDate: newDate,
+					bookingType: $scope.booking_type
+		        };
+		    $http.post('./orders/period', data).then(function successCallback(response) {
+					$scope.booked_list = response.data.list;
+					var tmp = [];
+					angular.forEach($scope.inits['BOOKING_PERIOD_LIST'], function(data,index,array){
+						var flag = false;
+						angular.forEach(response.data.list, function(ld,li,la){
+							angular.forEach(ld.period, function(pd,pi,pa){
+								if (data.period==pd) {
+									flag = true;
+								}
+							});
+						});
+						if (!flag) {
+							tmp.push(data);
+						}
+					});
+					$scope.period_list = tmp;
+		        }, function errorCallback(response) {
+					
+		    });
 		});
 		$scope.$watch('input_booking_company', function(newCompany, oldCompany) {
 			$scope.booking_company = newCompany;

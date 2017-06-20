@@ -15,10 +15,12 @@
         <div ng-controller="index">
             <div id="openid" style='text-align:center; width: 90%; margin:auto;'><%=openid%></div>
             <div style='text-align:center; width: 90%; margin:auto;' ng-show="partOne">
-                <div>&nbsp;</div>
+                <div><img src="./static/img/logo.gif" width="100%"></div>
                 <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('FIELD');nextStep(2);">足球场</a>
                 <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('BAR');nextStep(2);">书吧/咖啡厅</a>
-                <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('ROOM');nextStep(2);">会议室</a>
+                <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('MEETINGROOMFL1');nextStep(2);">一层会议室</a>
+                <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('MEETINGROOMFL2');nextStep(2);">二层会议室</a>
+                <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('MEETINGROOMFL3');nextStep(2);">三层会议室</a>
                 <div>&nbsp;</div>
             </div>
             <div style='text-align:left; width: 90%; margin:auto;' ng-show="partTwo">
@@ -46,6 +48,8 @@
                 </div>
                 <div>&nbsp;</div>
                 <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="nextStep(3);">下一步</a>
+                <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="nextStep(5);">已预订</a>
+                <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="nextStep(1);">返回</a>
                 <div>&nbsp;</div>
             </div>
             <div style='text-align:left; width: 90%; margin:auto;' ng-show="partThree">
@@ -77,9 +81,21 @@
                             <input class="weui-input" type="tel" placeholder="请输入手机号" ng-model="booking_contact">
                         </div>
                     </div>
+                    <div class="weui-cells weui-cells_checkbox" ng-show="!isField && !isBar">
+                        <label class="weui-cell weui-check__label">
+							<div class="weui-cell__hd">
+								<input type="checkbox" class="weui-check" mg-model="booking_service" ng-click="setBookingService()">
+								<i class="weui-icon-checked"></i>
+							</div>
+							<div class="weui-cell__bd">
+								<p>是否茶水服务(收费)</p>
+							</div>
+						</label>
+                    </div>
                 </div>
                 <div>&nbsp;</div>
                 <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="nextStep(4);">下一步</a>
+                <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="nextStep(2);">返回</a>
                 <div>&nbsp;</div>
             </div>
             <div style='text-align:left; width: 90%; margin:auto;' ng-show="partFour">
@@ -109,12 +125,12 @@
                             <label>{{p.period}}</label>
                         </div>
                     </div>
-                    <div class="weui-cell" ng-show="isField">
+                    <div class="weui-cell" ng-show="booking_fee > 0.0">
                         <div class="weui-cell__hd">
                             <label class="weui-label">总费用</label>
                         </div>
                         <div class="weui-cell__bd">
-                            <label>{{booking_fee | currency: '￥'}}（{{unit_price | currency: '￥'}}/小时）</label>
+                            <label>{{booking_fee | currency: '￥'}}</label>
                         </div>
                     </div>
                     <div class="weui-cell" ng-show="!isField">
@@ -144,6 +160,39 @@
                 </div>
                 <div>&nbsp;</div>
                 <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="submit();" ng-show="isDone">提交</a>
+                <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="nextStep(3);">返回</a>
+                <div>&nbsp;</div>
+            </div>
+            <div style='text-align:left; width: 90%; margin:auto;' ng-show="partFive">
+                <div>&nbsp;</div>
+                <div class="weui-cells weui-cells_form" ng-repeat="l in booked_list">
+                    <div class="weui-cell" ng-repeat="p in l.period">
+                        <div class="weui-cell__hd">
+                            <label class="weui-label"><div ng-show="$index==0">时段</div></label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <label>{{p}}</label>
+                        </div>
+                    </div>
+                    <div class="weui-cell" ng-show="!isField">
+                        <div class="weui-cell__hd">
+                            <label class="weui-label">公司</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <label>{{l.company}}</label>
+                        </div>
+                    </div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd">
+                            <label class="weui-label">姓名</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <label>{{l.username}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div>&nbsp;</div>
+                <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="nextStep(2);">返回</a>
                 <div>&nbsp;</div>
             </div>
         </div>
