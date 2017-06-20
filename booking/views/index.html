@@ -24,6 +24,7 @@
                 <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('MEETINGROOMFL3');nextStep(2);">三层会议室</a>
                 <div>&nbsp;</div>
                 <div>钥匙领用电话: 0574-86681291<br>发票领取电话: 0574-86681126</div>
+				<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;足球场:￥{{inits['FIELD_UNIT_PRICE']}}/小时<br>一层会议室:￥{{inits['MEETINGROOMFL1_UNIT_PRICE']}}/小时<br>茶水服务:￥{{inits['SERVICE_PRICE']}}/次</div>
                 <div>&nbsp;</div>
             </div>
             <div style='text-align:left; width: 90%; margin:auto;' ng-show="partTwo">
@@ -131,30 +132,6 @@
                             <label>{{booking_fee | currency: '￥'}}</label>
                         </div>
                     </div>
-                    <div class="weui-cell" ng-show="isField">
-                        <div class="weui-cell__hd">
-                            <label class="weui-label">&nbsp;</label>
-                        </div>
-                        <div class="weui-cell__bd">
-                            <label>足球场:￥{{inits['FIELD_UNIT_PRICE']}}/小时</label>
-                        </div>
-                    </div>
-                    <div class="weui-cell" ng-show="input_booking_type=='MEETINGROOMFL1'">
-                        <div class="weui-cell__hd">
-                            <label class="weui-label">&nbsp;</label>
-                        </div>
-                        <div class="weui-cell__bd">
-                            <label>一层会议室:￥{{inits['MEETINGROOMFL1_UNIT_PRICE']}}/小时</label>
-                        </div>
-                    </div>
-                    <div class="weui-cell" ng-show="booking_service">
-                        <div class="weui-cell__hd">
-                            <label class="weui-label">&nbsp;</label>
-                        </div>
-                        <div class="weui-cell__bd">
-                            <label>茶水服务:￥{{inits['SERVICE_PRICE']}}/次</label>
-                        </div>
-                    </div>
                     <div class="weui-cell" ng-show="!isField">
                         <div class="weui-cell__hd">
                             <label class="weui-label">公司</label>
@@ -183,6 +160,7 @@
                 <div>&nbsp;</div>
                 <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="submit();" ng-show="isDone">提交</a>
                 <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="nextStep(3);" ng-show="isDone">返回</a>
+                <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="nextStep(1);" ng-show="!isDone">返回</a>
                 <div>&nbsp;</div>
             </div>
             <div style='text-align:left; width: 90%; margin:auto;' ng-show="partFive">

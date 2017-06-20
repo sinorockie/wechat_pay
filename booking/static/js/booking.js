@@ -1,5 +1,5 @@
 angular.module('booking', [])
-	.controller('index', function($scope, $filter, $http){
+	.controller('index', function($scope, $filter, $http, $window){
 		$http.get('./init')
 			.success(function(data){
 			$scope.inits = data;
@@ -26,11 +26,7 @@ angular.module('booking', [])
 		$scope.partFive = false;
 		$scope.nextStep = function(partNumber) {
 			if (partNumber == 1) {
-				$scope.partOne = true;
-				$scope.partTwo = false;
-				$scope.partThree = false;
-				$scope.partFour = false;
-				$scope.partFive = false;
+				$window.location.reload();
 			} else if (partNumber == 2) {
 				$scope.partOne = false;
 				$scope.partTwo = true;
@@ -95,6 +91,7 @@ angular.module('booking', [])
 			if (!angular.equals($scope.inits, {})) {
 				$scope.input_booking_type = newBookingType;
 				$scope.booking_service = false;
+				$scope.booking_company = "";
 				$scope.booking_type = $scope.inits['BOOKING_TYPE_LIST'][newBookingType].chinese;
 				$scope.company_list = $scope.inits['BOOKING_COMPANY_LIST'];
 				if (newBookingType=="FIELD") {
@@ -191,7 +188,7 @@ angular.module('booking', [])
 							}
 							$http.post('./orders/update', data).then(function successCallback(response) {
 									$http.post('./weixin/pushMsg', {orderid: data.orderid}).then(function successCallback(response) {
-
+		
 										}, function errorCallback(response) {
 											
 									});
