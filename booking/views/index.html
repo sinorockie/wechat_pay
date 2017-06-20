@@ -13,14 +13,17 @@
     </head>
     <body>
         <div ng-controller="index">
-            <div id="openid" style='text-align:center; width: 90%; margin:auto;'><%=openid%></div>
+            <div id="openid" style='text-align:center; width: 90%; margin:auto; display:none;'><%=openid%></div>
             <div style='text-align:center; width: 90%; margin:auto;' ng-show="partOne">
+                <div>&nbsp;</div>
                 <div><img src="./static/img/logo.gif" width="100%"></div>
                 <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('FIELD');nextStep(2);">足球场</a>
                 <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('BAR');nextStep(2);">书吧/咖啡厅</a>
                 <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('MEETINGROOMFL1');nextStep(2);">一层会议室</a>
                 <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('MEETINGROOMFL2');nextStep(2);">二层会议室</a>
                 <a href="#" class="weui-btn weui-btn_primary" ng-click="setBookingType('MEETINGROOMFL3');nextStep(2);">三层会议室</a>
+                <div>&nbsp;</div>
+                <div>钥匙领用电话: 0574-86681291<br>发票领取电话: 0574-86681126</div>
                 <div>&nbsp;</div>
             </div>
             <div style='text-align:left; width: 90%; margin:auto;' ng-show="partTwo">
@@ -60,9 +63,7 @@
                             <label class="weui-label">公司</label>
                         </div>
                         <div class="weui-cell__bd">
-                            <select class="weui-select" ng-model="booking_company">
-                                <option ng-repeat="c in company_list" value="{{c.company}}">{{c.company}}</option>
-                            </select>
+							<input class="weui-input" type="text" placeholder="请输入公司" ng-model="booking_company">
                         </div>
                     </div>
                     <div class="weui-cell">
@@ -160,7 +161,7 @@
                 </div>
                 <div>&nbsp;</div>
                 <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="submit();" ng-show="isDone">提交</a>
-                <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="nextStep(3);">返回</a>
+                <a href="javascript:;" class="weui-btn weui-btn_primary" ng-click="nextStep(3);" ng-show="isDone">返回</a>
                 <div>&nbsp;</div>
             </div>
             <div style='text-align:left; width: 90%; margin:auto;' ng-show="partFive">

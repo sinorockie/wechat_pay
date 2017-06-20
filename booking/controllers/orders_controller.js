@@ -14,7 +14,8 @@ exports.createOrder = function(req, res) {
 		bookingtype: req.body.bookingtype,
 		bookingdate: moment(req.body.bookingdate, 'YYYY-MM-DD'),
 		bookingfee: req.body.bookingfee,
-		period: req.body.period
+		period: req.body.period,
+		favor: req.body.favor
 	});
 	Order.find({'bookingdate': moment(req.body.bookingdate, 'YYYY-MM-DD'), 'bookingtype': req.body.bookingtype, 'status': 'COMPLETED'}, 'period').exec(function(err, orders) {
 		if (err) {
@@ -87,7 +88,7 @@ exports.getOrders = function(req, res) {
 	}
 	util.log('from: ' + fDate.format('YYYY-MM-DD HH:mm:ss ZZ'));
 	util.log('to: ' + tDate.format('YYYY-MM-DD HH:mm:ss ZZ'));
-	Order.find({'bookingdate': {$gte: fDate.toDate(), $lte: tDate.toDate()}, 'status': 'COMPLETED'}, 'orderid bookingdate bookingtype period username usercontact company', {sort: 'bookingdate'}).exec(function(err, orders) {
+	Order.find({'bookingdate': {$gte: fDate.toDate(), $lte: tDate.toDate()}, 'status': 'COMPLETED'}, 'orderid bookingdate bookingtype period username usercontact company favor', {sort: 'bookingdate'}).exec(function(err, orders) {
 		if (err) {
 			util.log(err);
 		} else {

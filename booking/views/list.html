@@ -28,6 +28,7 @@
                         <td>姓名</td>
                         <td>手机</td>
                         <td>公司</td>
+                        <td>茶水服务</td>
                     </tr>
                     <tr ng-repeat='order in list'>
                         <td>{{order.orderid}}</td>
@@ -37,6 +38,7 @@
                         <td>{{order.username}}</td>
                         <td>{{order.usercontact}}</td>
                         <td>{{order.company}}</td>
+                        <td>{{order.favor ? '是' : '否'}}</td>
                     </tr>
                 </table>
             </div>

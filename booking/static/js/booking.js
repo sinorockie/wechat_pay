@@ -56,29 +56,24 @@ angular.module('booking', [])
 			} else if (partNumber == 4) {
 				if ($scope.isField==false) {
 					if (angular.equals($scope.booking_company, undefined) || angular.equals($scope.booking_company, '') || angular.equals($scope.booking_company, null)) {
-						$('#errorTips').html("请选择所在公司");
+						$('#errorTips').html("请填写公司");
 						$('#iosDialog2').fadeIn(200);
 						return;
-					} else {
-						$('#errorTips').html("");
 					}
-				} else if (angular.equals($scope.booking_user, '') || angular.equals($scope.booking_company, null)) {
+				}
+				if (angular.equals($scope.booking_user, '') || angular.equals($scope.booking_company, null)) {
 					$('#errorTips').html("请填写姓名");
 					$('#iosDialog2').fadeIn(200);
 					return;
-				} else if (angular.equals($scope.booking_contact, '') || angular.equals($scope.booking_contact, null)) {
-					$('#errorTips').html("请填写联系方式");
+				}
+				if (angular.equals($scope.booking_contact, '') || angular.equals($scope.booking_contact, null)) {
+					$('#errorTips').html("请填写手机号");
 					$('#iosDialog2').fadeIn(200);
 					return;
-				} else {
-					$('#errorTips').html("");
 				}
-				if ($scope.isField) {
-					$scope.booking_fee = $scope.inits['UNIT_PRICE'] * $scope.selected_units;
-				} else if (!$scope.isBar && $scope.booking_service) {
-					$scope.booking_fee = $scope.inits['SERVICE_PRICE'];
-				} else {
-					$scope.booking_fee = 0.0;
+				$scope.booking_fee = $scope.unit_price * $scope.selected_units;
+				if ($scope.booking_service) {
+					$scope.booking_fee += $scope.inits['SERVICE_PRICE'];
 				}
 				$scope.partOne = false;
 				$scope.partTwo = false;
@@ -99,6 +94,13 @@ angular.module('booking', [])
 			if (!angular.equals($scope.inits, {})) {
 				$scope.booking_type = $scope.inits['BOOKING_TYPE_LIST'][newBookingType].chinese;
 				$scope.company_list = $scope.inits['BOOKING_COMPANY_LIST'];
+				if (newBookingType=="FIELD") {
+					$scope.unit_price = $scope.inits['FIELD_UNIT_PRICE'];
+				} else if (newBookingType=="MEETINGROOMFL1") {
+					$scope.unit_price = $scope.inits['MEETINGROOMFL1_UNIT_PRICE'];
+				} else {
+					$scope.unit_price = 0.0;
+				}
 				var data = {
 						fromDate: $scope.input_booking_date,
 						toDate: $scope.input_booking_date,
@@ -159,7 +161,8 @@ angular.module('booking', [])
 					bookingtype: $scope.booking_type,
 					bookingdate: $scope.booking_date,
 					bookingfee: $scope.booking_fee,
-					period: period
+					period: period,
+					favor: $scope.booking_service
 		        };
 		    console.log(angular.fromJson(data));
 			$http.post('./orders/create', data).then(function successCallback(response) {

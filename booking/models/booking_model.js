@@ -12,6 +12,7 @@ var OrderSchema = new Schema({
 	bookingfee: Number,
 	period: [String],
 	status: {type: String, enum:['PENDING', 'COMPLETED', 'CANCEL'], default: 'PENDING'},
+	favor: {type: Boolean, default: false},
 	createtime: {type: Date, default: Date.now},
 	updatetime: {type: Date, default: Date.now}
 });

@@ -29,7 +29,8 @@
 			{"company": ""},
 			{"company": "朴洛教育科技（上海）有限公司"}
 		],
-		"UNIT_PRICE": 0.01,
-		"SERVICE_PRICE": 0.01
+		"FIELD_UNIT_PRICE": 100.00,
+		"MEETINGROOMFL1_UNIT_PRICE": 10.00,
+		"SERVICE_PRICE": 50.00
 	}
 }
