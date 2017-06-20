@@ -16,6 +16,7 @@ angular.module('booking', [])
 		$scope.booking_user = "";
 		$scope.booking_contact = "";
 		$scope.input_booking_date = new Date();
+		$scope.input_booking_type = "";
 		$scope.booking_service = false;
 
 		$scope.partOne = true;
@@ -92,6 +93,8 @@ angular.module('booking', [])
 		$scope.isBar = false;
 		$scope.setBookingType = function(newBookingType) {
 			if (!angular.equals($scope.inits, {})) {
+				$scope.input_booking_type = newBookingType;
+				$scope.booking_service = false;
 				$scope.booking_type = $scope.inits['BOOKING_TYPE_LIST'][newBookingType].chinese;
 				$scope.company_list = $scope.inits['BOOKING_COMPANY_LIST'];
 				if (newBookingType=="FIELD") {
