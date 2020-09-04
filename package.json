@@ -21,7 +21,7 @@
 		"jquery": "3.1.0",
 		"jssha": "2.2.0",
 		"moment": "latest",
-		"mongodb": "2.2.28",
+		"mongodb": "3.1.13",
 		"mongoose": "latest",
 		"request": "latest",
 		"request-promise": "4.2.1",
